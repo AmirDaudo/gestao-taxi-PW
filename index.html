@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <!-- Metadados e links de CSS -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taxi Service - Página Inicial</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Estilo Personalizado -->
+    <link rel="stylesheet" href="style-home.css">
+</head>
+<body>
+    <!-- Navbar Fixa -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-warning p-3 sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <img src="Vetor.png" alt="Taxi Logo" width="90">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="sobre.html">Sobre</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="servico.html">Serviços</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contacto.html">Contato</a>
+                    </li>
+                    <li class="nav-item">
+                        <!-- Botão para abrir o modal de login -->
+                        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-dark text-light text-center py-5" style="background-image: url('img/taxi-hero.jpg'); background-size: cover; background-position: center;">
+        <div class="container">
+            <h1 class="display-4">Táxi 24 Horas, Segurança e Conforto</h1>
+            <p class="lead">Peça um táxi a qualquer hora, em qualquer lugar.</p>
+            <a href="pedido.html" class="btn btn-warning btn-lg"><i class="fas fa-taxi"></i> Pedir Táxi Agora</a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="py-5">
+        <div class="container text-center">
+            <h2 class="mb-5">Nossos Serviços</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow">
+                        <div class="card-body">
+                            <i class="fas fa-car fa-3x mb-3 text-warning"></i>
+                            <h5 class="card-title">Táxi Rápido</h5>
+                            <p class="card-text">Chegue ao seu destino rapidamente com nossos motoristas experientes.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow">
+                        <div class="card-body">
+                            <i class="fas fa-couch fa-3x mb-3 text-warning"></i>
+                            <h5 class="card-title">Táxi Confortável</h5>
+                            <p class="card-text">Desfrute de conforto e segurança nos nossos veículos bem equipados.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow">
+                        <div class="card-body">
+                            <i class="fas fa-user-tie fa-3x mb-3 text-warning"></i>
+                            <h5 class="card-title">Motoristas Profissionais</h5>
+                            <p class="card-text">Nossos motoristas são profissionais e capacitados para lhe atender.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="bg-light py-5">
+        <div class="container text-center">
+            <h2 class="mb-5">Comentários</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <i class="fas fa-quote-left fa-2x mb-3"></i>
+                            <p class="card-text">"Melhor serviço de táxi que já usei! Muito rápido e seguro."</p>
+                            <h6 class="card-subtitle mb-2 text-muted">- Amir Daudo</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <i class="fas fa-quote-left fa-2x mb-3"></i>
+                            <p class="card-text">"Sempre que preciso de um táxi, confio nesta empresa. Muito profissional."</p>
+                            <h6 class="card-subtitle mb-2 text-muted">- Almir Almorim</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <i class="fas fa-quote-left fa-2x mb-3"></i>
+                            <p class="card-text">"Os motoristas são muito educados e os carros sempre estão em ótimas condições."</p>
+                            <h6 class="card-subtitle mb-2 text-muted">- Quimba Maera</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal de Login -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="phoneLogin" class="form-label">Número de Telefone</label>
+                            <div class="input-group">
+                                <span class="input-group-text">+258</span>
+                                <input type="tel" class="form-control" id="phoneLogin" placeholder="Número de telefone" required>
+                            </div>
+                            <div class="error" id="phoneLoginError">Por favor, insira apenas números.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="passwordLogin" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="passwordLogin" placeholder="Digite sua senha" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">Entrar</button>
+                    </form>
+
+                    <!-- Seção para login com redes sociais -->
+                    <div class="text-center mt-4">
+                        <p>Ou faça login com:</p>
+                        <button class="btn btn-danger w-100 mb-2"><i class="fab fa-google"></i> Entrar com Google</button>
+                        <button class="btn btn-dark w-100"><i class="fab fa-apple"></i> Entrar com iCloud</button>
+                    </div>
+
+                    <div class="mt-3 text-center">
+                        <p>Não tem uma conta? <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">Cadastre-se</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Cadastro -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Cadastro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="mb-3">
+                            <label for="usernameRegister" class="form-label">Nome de Usuário</label>
+                            <input type="text" class="form-control" id="usernameRegister" placeholder="Username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="emailRegister" class="form-label">E-mail</label>
+                            <input type="email" class="form-control" id="emailRegister" placeholder="seuemail@gmail.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneRegister" class="form-label">Número de Celular</label>
+                            <div class="input-group">
+                                <span class="input-group-text">+258</span>
+                                <input type="tel" class="form-control" id="phoneRegister" placeholder="Número de celular" required>
+                            </div>
+                            <div class="error" id="phoneRegisterError">Por favor, insira apenas números.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="passwordRegister" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="passwordRegister" placeholder="Digite sua senha" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPasswordRegister" class="form-label">Confirme sua Senha</label>
+                            <input type="password" class="form-control" id="confirmPasswordRegister" placeholder="Confirme sua senha" required>
+                            <div class="error" id="passwordMatchError">As senhas não coincidem.</div>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">Cadastrar</button>
+                    </form>
+
+                    <!-- Seção para cadastro com redes sociais -->
+                    <div class="text-center mt-4">
+                        <p>Ou cadastre-se com:</p>
+                        <button class="btn btn-danger w-100 mb-2"><i class="fab fa-google"></i> Cadastre-se com Google</button>
+                        <button class="btn btn-dark w-100"><i class="fab fa-apple"></i> Cadastre-se com iCloud</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="bg-warning text-center py-4">
+        <div class="container">
+            <p class="mb-0">&copy; 2024 Taxi Service. Todos os direitos reservados.</p>
+            <ul class="list-inline mt-3">
+                <li class="list-inline-item"><a href="#" class="text-dark"><i class="fab fa-facebook-f"></i> Facebook</a></li>
+                <li class="list-inline-item"><a href="#" class="text-dark"><i class="fab fa-instagram"></i> Instagram</a></li>
+                <li class="list-inline-item"><a href="#" class="text-dark"><i class="fab fa-twitter"></i> Twitter</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS and Font Awesome JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+
+    <!-- Script de Validação -->
+    <script>
+        // Função para validar campos de telefone
+        function validatePhone(inputId, errorId) {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+
+            input.addEventListener('input', function() {
+                const regex = /^[0-9]*$/;
+                if (!regex.test(input.value)) {
+                    error.style.display = 'block';
+                } else {
+                    error.style.display = 'none';
+                }
+            });
+        }
+
+        // Validação para o formulário de login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const phone = document.getElementById('phoneLogin').value;
+            const regex = /^[0-9]+$/;
+            if (!regex.test(phone)) {
+                e.preventDefault();
+                document.getElementById('phoneLoginError').style.display = 'block';
+            }
+        });
+
+        // Validação para o formulário de cadastro
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            const phone = document.getElementById('phoneRegister').value;
+            const password = document.getElementById('passwordRegister').value;
+            const confirmPassword = document.getElementById('confirmPasswordRegister').value;
+            const phoneRegex = /^[0-9]+$/;
+            let valid = true;
+
+            // Validação do telefone
+            if (!phoneRegex.test(phone)) {
+                document.getElementById('phoneRegisterError').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('phoneRegisterError').style.display = 'none';
+            }
+
+            // Validação das senhas
+            if (password !== confirmPassword) {
+                document.getElementById('passwordMatchError').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('passwordMatchError').style.display = 'none';
+            }
+
+            if (!valid) {
+                e.preventDefault();
+            }
+        });
+
+        // Inicializar validação ao carregar a página
+        window.onload = function() {
+            validatePhone('phoneLogin', 'phoneLoginError');
+            validatePhone('phoneRegister', 'phoneRegisterError');
+        };
+    </script>
+</body>
+</html>
