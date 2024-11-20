@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedir Táxi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            background-color: #f4f4f9;
+        }
+
+        .taxi-request {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+
+        .form-control, .btn {
+            height: 45px;
+        }
+
+        h1 {
+            color: #ff6f00;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background-color: #ff6f00;
+            color: white;
+        }
+
+        .btn:hover {
+            background-color: #e65a00;
+        }
+
+        /* Estilizar mapa */
+        #map {
+            width: 100%;
+            height: 300px;
+            background-color: #e9e9e9;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Container da Página -->
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="taxi-request text-center">
+                    <h1>Pedir Táxi</h1>
+                    <!-- Formulário de Solicitação de Táxi -->
+                    <form id="taxiForm" action="confirmacao.html" method="POST">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="pickup-location" name="pickup-location" placeholder="Local de Partida" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="destination-location" name="destination-location" placeholder="Destino" required>
+                        </div>
+                        <div class="mb-3">
+                            <select class="form-select" id="vehicle-type" name="vehicle-type">
+                                <option value="standard">Economica</option>
+                                <option value="premium">Confortavel</option>
+                                <option value="van">Táxi - mota</option>
+                            </select>
+                        </div>
+                        <div id="map"></div> <!-- Mapa interativo -->
+                        <button type="button" class="btn btn-lg w-100" id="get-location">Obter Localização Atual</button>
+                        <button type="submit" class="btn btn-lg w-100">Confirmar Pedido</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap e Leaflet JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Inicializa o mapa
+        var map = L.map('map').setView([-12.977123, 40.496441], 13); // Coordenadas de Pemba
+
+        // Adiciona uma camada de mapa
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        var routeControl = L.control({position: 'topleft'}).addTo(map);
+        var currentMarker;
+        var routeLayer = L.layerGroup().addTo(map); // Para adicionar a rota no mapa
+
+        // Função para obter a localização atual do usuário
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
+
+                    // Preenche o campo "Local de Partida" com as coordenadas
+                    document.getElementById('pickup-location').value = lat + ', ' + lng;
+
+                    // Adiciona um marcador na posição atual
+                    if (currentMarker) {
+                        map.removeLayer(currentMarker);
+                    }
+                    currentMarker = L.marker([lat, lng]).addTo(map)
+                        .bindPopup("Sua localização")
+                        .openPopup();
+
+                    // Centraliza o mapa na localização do usuário
+                    map.setView([lat, lng], 13);
+                }, function(error) {
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            alert("Usuário negou a solicitação de Geolocalização.");
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            alert("A localização não está disponível.");
+                            break;
+                        case error.TIMEOUT:
+                            alert("A solicitação para obter a localização do usuário expirou.");
+                            break;
+                        case error.UNKNOWN_ERROR:
+                            alert("Ocorreu um erro desconhecido.");
+                            break;
+                    }
+                });
+            } else {
+                alert('Seu navegador não suporta Geolocation.');
+            }
+        }
+
+        // Adiciona o evento ao botão de obter localização
+        document.getElementById('get-location').addEventListener('click', getCurrentLocation);
+
+        // Função para obter a rota usando OpenRouteService
+        function getRoute() {
+            var pickupLocation = document.getElementById('pickup-location').value;
+            var destinationLocation = document.getElementById('destination-location').value;
+
+            // Verifica se os campos estão preenchidos
+            if (!pickupLocation || !destinationLocation) {
+                alert("Por favor, preencha ambos os campos de localização.");
+                return;
+            }
+
+            var coordinates = pickupLocation.split(',').map(Number);
+            var start = coordinates[0] + ',' + coordinates[1]; // Local de partida
+            var end = destinationLocation; // Destino
+
+            // API Key do OpenRouteService (substitua pela sua)
+            var apiKey = 'YOUR_OPENROUTESERVICE_API_KEY'; // Cole aqui sua chave da API
+
+            // Faz a requisição para obter a rota
+            fetch(`https://api.openrouteservice.org/v2/directions/driving-car?start=${start}&end=${end}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': apiKey,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Limpa as rotas anteriores
+                routeLayer.clearLayers();
+                
+                if (data.routes && data.routes.length > 0) {
+                    var route = data.routes[0];
+
+                    // Extrai as coordenadas da rota
+                    var latLngs = route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+                    var polyline = L.polyline(latLngs, { color: 'blue' }).addTo(routeLayer);
+                    map.fitBounds(polyline.getBounds()); // Ajusta o mapa para mostrar a rota
+                } else {
+                    alert("Não foi possível encontrar uma rota.");
+                }
+            })
+            .catch(error => {
+                console.error("Erro ao obter a rota:", error);
+                alert("Erro ao obter a rota. Verifique sua chave da API.");
+            });
+        }
+
+        // Adiciona o evento ao formulário para obter a rota ao enviar
+        document.getElementById('taxiForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Impede o envio do formulário padrão
+            getRoute(); // Obtém a rota
+        });
+    </script>
+</body>
+</html>
