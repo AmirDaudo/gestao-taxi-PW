@@ -1,0 +1,167 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: #f0f2f5;
+}
+
+.container-login {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.img-box {
+    width: 50%;
+    background-color: #5bb4ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.img-box img {
+    max-width: 100%;
+    height: auto;
+}
+
+.content-box {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    background-color: #fff;
+}
+
+.form-box {
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-box h2 {
+    color: #32325f;
+    font-weight: 600;
+    font-size: 2em;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.input-box {
+    margin-bottom: 20px;
+}
+
+.input-box label {
+    display: block;
+    margin-bottom: 5px;
+    color: #32324f;
+    font-weight: 500;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.input-box input::placeholder {
+    color: #a9adb6;
+}
+
+.input-box input[type="submit"] {
+    background: #4aa4ee;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.3s;
+}
+
+.input-box input[type="submit"]:hover {
+    background: #3286ca;
+}
+
+.remember {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.remember a {
+    color: #4aa4ee;
+    text-decoration: none;
+}
+
+.remember a:hover {
+    color: #3286ce;
+}
+
+.input-box p {
+    text-align: center;
+    color: #32324f;
+}
+
+.input-box p a {
+    color: #4aa4ee;
+    text-decoration: none;
+}
+
+.input-box p a:hover {
+    color: #3286ca;
+}
+
+.social-login {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.social-login li {
+    list-style: none;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.social-login li:hover {
+    background: #e4e4e4;
+}
+
+.social-login li img {
+    width: 24px;
+    height: 24px;
+}
+
+@media (max-width: 868px) {
+    .img-box {
+        display: none;
+    }
+    .content-box {
+        width: 100%;
+    }
+}
+
+@media (max-width: 450px) {
+    .remember {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .remember a {
+        margin-top: 10px;
+    }
+}
