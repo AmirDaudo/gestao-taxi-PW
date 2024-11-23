@@ -29,16 +29,16 @@
                         map.removeLayer(currentMarker);
                     }
                     currentMarker = L.marker([lat, lng]).addTo(map)
-                        .bindPopup("Sua localizaÃ§Ã£o")
+                        .bindPopup("Sua localização")
                         .openPopup();
 
                     // Centraliza o mapa
                     map.setView([lat, lng], 13);
                 }, function(error) {
-                    alert("Erro ao obter localizaÃ§Ã£o.");
+                    alert("Erro ao obter localização");
                 });
             } else {
-                alert('Seu navegador nÃ£o suporta Geolocation.');
+                alert('Seu navegador não suporta Geolocation.');
             }
         }
 

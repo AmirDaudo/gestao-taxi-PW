@@ -22,6 +22,7 @@ com\gestaorotas\DenunciasJpaController.class
 com\gestaorotas\model\Denuncias.class
 com\gestaorotas\controladora\exceptions\NonexistentEntityException.class
 com\gestaorotas\CorridasJpaController.class
+com\gestaorotas\servlet\AdminDenunciasServlet.class
 com\gestaorotas\exceptions\PreexistingEntityException.class
 com\gestaorotas\AlterarSenhaServlet.class
 com\gestaorotas\model\Motoristas.class

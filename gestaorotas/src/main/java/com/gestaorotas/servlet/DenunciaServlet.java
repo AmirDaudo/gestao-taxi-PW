@@ -45,11 +45,11 @@ public class DenunciaServlet extends HttpServlet {
             denuncia.setUsuarioId(usuario);
             denuncia.setData(new java.util.Date());
 
-            em.merge(denuncia);
+            em.persist(denuncia);  // Utilize persist se a entidade for nova
             em.getTransaction().commit();
 
-            // Adicionar mensagem de sucesso à sessão
-            session.setAttribute("successMessage", "Denúncia enviada com sucesso!");
+            // Adicionar flag de sucesso na sessão
+            session.setAttribute("denunciaEnviada", true);
         } catch (Exception e) {
             em.getTransaction().rollback();
             throw new ServletException("Erro ao salvar denúncia", e);

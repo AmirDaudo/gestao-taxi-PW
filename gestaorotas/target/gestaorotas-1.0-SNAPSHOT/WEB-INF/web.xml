@@ -52,6 +52,10 @@
         <servlet-name>SessionListener</servlet-name>
         <servlet-class>com.gestaorotas.servlet.SessionListener</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AdminDenunciasServlet</servlet-name>
+        <servlet-class>com.gestaorotas.servlet.AdminDenunciasServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CadastroUser</servlet-name>
         <url-pattern>/CadastroUser</url-pattern>
@@ -103,6 +107,10 @@
     <servlet-mapping>
         <servlet-name>SessionListener</servlet-name>
         <url-pattern>/SessionListener</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminDenunciasServlet</servlet-name>
+        <url-pattern>/AdminDenunciasServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

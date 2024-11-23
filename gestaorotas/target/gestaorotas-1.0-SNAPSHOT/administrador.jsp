@@ -49,41 +49,58 @@
     <header class="bg-dark text-light text-center py-4">
         <h1>Painel do Administrador</h1>
     </header>
-        <div class="container mt-5">
-        <h1>Denúncias</h1>
-        <div class="card">
-            <div class="card-body">
-                <ul class="list-group">
-                    <%
-                        EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
-                        EntityManager em = emf.createEntityManager();
-                        try {
-                            // Use a entidade correta 'Denuncias' e não 'Denuncia'
-                            List<Denuncias> denuncias = em.createQuery("SELECT d FROM Denuncias d", Denuncias.class).getResultList();
-                            if (denuncias != null && !denuncias.isEmpty()) {
-                                for (Denuncias denuncia : denuncias) {
-                    %>
-                                    <li class="list-group-item">
-                                        <strong>Data:</strong> <%= denuncia.getData() %><br>
-                                        <strong>Nome do Usuário:</strong> <%= denuncia.getUsuarioNome() %><br>
-                                        <strong>Email do Usuário:</strong> <%= denuncia.getUsuarioEmail() %><br>
-                                        <strong>Mensagem:</strong> <%= denuncia.getMensagem() %>
-                                    </li>
-                    <%
+            <!-- Seção de Denúncias -->
+        <section class="mt-5">
+            <h2>Denúncias</h2>
+            <div class="card">
+                <div class="card-body">
+                    <ul class="list-group">
+                        <%
+                            EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
+                            EntityManager em = emf.createEntityManager();
+                            try {
+                                List<Denuncias> denuncias = em.createQuery("SELECT d FROM Denuncias d", Denuncias.class).getResultList();
+                                if (denuncias != null && !denuncias.isEmpty()) {
+                                    for (Denuncias denuncia : denuncias) {
+                        %>
+                                        <li class="list-group-item">
+                                            <strong>Data:</strong> <%= denuncia.getData() %><br>
+                                            <strong>Nome do Usuário:</strong> <%= denuncia.getUsuarioNome() %><br>
+                                            <strong>Email do Usuário:</strong> <%= denuncia.getUsuarioEmail() %><br>
+                                            <strong>Mensagem:</strong> <%= denuncia.getMensagem() %><br>
+                                            <strong>Status:</strong> <%= denuncia.getStatus() %><br>
+                                            <form action="AdminDenunciasServlet" method="post" style="display:inline;">
+                                                <input type="hidden" name="id" value="<%= denuncia.getId() %>">
+                                                <input type="hidden" name="action" value="apagar">
+                                                <button type="submit" class="btn btn-danger mt-2">Apagar</button>
+                                            </form>
+                                            <form action="AdminDenunciasServlet" method="post" style="display:inline;">
+                                                <input type="hidden" name="id" value="<%= denuncia.getId() %>">
+                                                <input type="hidden" name="action" value="aprovar">
+                                                <button type="submit" class="btn btn-success mt-2">Aprovar</button>
+                                            </form>
+                                            <form action="AdminDenunciasServlet" method="post" style="display:inline;">
+                                                <input type="hidden" name="id" value="<%= denuncia.getId() %>">
+                                                <input type="hidden" name="action" value="rejeitar">
+                                                <button type="submit" class="btn btn-warning mt-2">Rejeitar</button>
+                                            </form>
+                                        </li>
+                        <%
+                                    }
+                                } else {
+                        %>
+                                    <li class="list-group-item">Nenhuma denúncia recebida.</li>
+                        <%
                                 }
-                            } else {
-                    %>
-                                <li class="list-group-item">Nenhuma denúncia recebida.</li>
-                    <%
+                            } finally {
+                                em.close();
                             }
-                        } finally {
-                            em.close();
-                        }
-                    %>
-                </ul>
+                        %>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </div>            
+        </section>
+           
           <div class="container mt-5">
         <h1>Motoristas Logados</h1>
         <div class="table-responsive">

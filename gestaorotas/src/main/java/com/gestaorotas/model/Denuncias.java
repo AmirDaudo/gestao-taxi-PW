@@ -39,28 +39,31 @@ import java.util.Date;
     @NamedQuery(name = "Denuncias.findByData", query = "SELECT d FROM Denuncias d WHERE d.data = :data")})
 public class Denuncias implements Serializable {
 
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "usuarioNome")
+    private String usuarioNome;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "usuarioEmail")
+    private String usuarioEmail;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "mensagem")
+    private String mensagem;
+    @Size(max = 20)
+    @Column(name = "status")
+    private String status;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
-    @Column(name = "usuarioNome")
-    private String usuarioNome;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 30)
-    @Column(name = "usuarioEmail")
-    private String usuarioEmail;
-    @Basic(optional = false)
-    @NotNull
-    @Lob
-    @Size(min = 1, max = 65535)
-    @Column(name = "mensagem")
-    private String mensagem;
     @Column(name = "data")
     @Temporal(TemporalType.TIMESTAMP)
     private Date data;
@@ -90,29 +93,6 @@ public class Denuncias implements Serializable {
         this.id = id;
     }
 
-    public String getUsuarioNome() {
-        return usuarioNome;
-    }
-
-    public void setUsuarioNome(String usuarioNome) {
-        this.usuarioNome = usuarioNome;
-    }
-
-    public String getUsuarioEmail() {
-        return usuarioEmail;
-    }
-
-    public void setUsuarioEmail(String usuarioEmail) {
-        this.usuarioEmail = usuarioEmail;
-    }
-
-    public String getMensagem() {
-        return mensagem;
-    }
-
-    public void setMensagem(String mensagem) {
-        this.mensagem = mensagem;
-    }
 
     public Date getData() {
         return data;
@@ -153,6 +133,38 @@ public class Denuncias implements Serializable {
     @Override
     public String toString() {
         return "com.gestaorotas.model.Denuncias[ id=" + id + " ]";
+    }
+
+    public String getUsuarioNome() {
+        return usuarioNome;
+    }
+
+    public void setUsuarioNome(String usuarioNome) {
+        this.usuarioNome = usuarioNome;
+    }
+
+    public String getUsuarioEmail() {
+        return usuarioEmail;
+    }
+
+    public void setUsuarioEmail(String usuarioEmail) {
+        this.usuarioEmail = usuarioEmail;
+    }
+
+    public String getMensagem() {
+        return mensagem;
+    }
+
+    public void setMensagem(String mensagem) {
+        this.mensagem = mensagem;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
     
 }

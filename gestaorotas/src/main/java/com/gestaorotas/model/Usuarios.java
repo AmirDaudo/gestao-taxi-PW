@@ -32,6 +32,7 @@ public class Usuarios implements Serializable {
     @Column(name = "nome")
     private String nome;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Size(max = 255)
     @Column(name = "email")
     private String email;
@@ -121,6 +122,16 @@ public class Usuarios implements Serializable {
         return "com.gestaorotas.model.Usuarios[ id=" + id + " ]";
     }
 
+
+    @XmlTransient
+    public List<Denuncias> getDenunciasList() {
+        return denunciasList;
+    }
+
+    public void setDenunciasList(List<Denuncias> denunciasList) {
+        this.denunciasList = denunciasList;
+    }
+
     public String getNome() {
         return nome;
     }
@@ -143,14 +154,5 @@ public class Usuarios implements Serializable {
 
     public void setSenha(String senha) {
         this.senha = senha;
-    }
-
-    @XmlTransient
-    public List<Denuncias> getDenunciasList() {
-        return denunciasList;
-    }
-
-    public void setDenunciasList(List<Denuncias> denunciasList) {
-        this.denunciasList = denunciasList;
     }
 }

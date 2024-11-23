@@ -125,46 +125,47 @@
 </div>
 
     <!-- Restante do cÃ³digo HTML do painel do cliente, mapa e formulÃ¡rios -->
- <!-- Container principal -->
+    <!-- Container principal -->
     <div class="container mt-3">
-        <h1 class="text-center">SolicitaÃ§Ã£o de TÃ¡xi</h1>
+        <h1 class="text-center">Solicitação de Táxi</h1>
 
-        <!-- Mapa da localizaÃ§Ã£o -->
+        <!-- Mapa da localização -->
         <div id="map"></div>
 
-        <!-- FormulÃ¡rio de SolicitaÃ§Ã£o de TÃ¡xi -->
-        <form id="taxi-form" class="mt-4" action="CorridasServelet" method="post">
+        <!-- Formulário de Solicitação de Táxi -->
+        <form id="taxi-form" class="mt-4">
             <div class="mb-3">
                 <label for="pickup" class="form-label">Local de Partida</label>
-                <input type="text" class="form-control" id="pickup" name="pontoPartida" readonly>
+                <input type="text" class="form-control" id="pickup" readonly>
             </div>
             <div class="mb-3">
                 <label for="destination" class="form-label">Destino</label>
-                <input type="text" class="form-control" id="destination" name="destino" placeholder="Digite o destino">
+                <input type="text" class="form-control" id="destination" placeholder="Digite o destino">
             </div>
-            <button type="submit" class="btn btn-primary w-100">Solicitar TÃ¡xi</button>
+            <button type="submit" class="btn btn-primary w-100">Solicitar Táxi</button>
         </form>
   
-    <!-- SeÃ§Ã£o de HistÃ³rico de Corridas -->
+    <!-- Seção de Histórico de Corridas -->
     <div class="container mt-5" id="historico-corridas">
         <div class="section-header">
-            <h3>HistÃ³rico de Corridas</h3>
+            <h3>Histórico de Corridas</h3>
             <ul id="corridas-list" class="list-group">
-                <!-- Corridas anteriores serÃ£o listadas aqui -->
+                <!-- Corridas anteriores serão listadas aqui -->
             </ul>
         </div>
     </div>
 
     <!-- Outras Funcionalidades: Cancelar Corrida, Denunciar, etc. -->
     <div class="container mt-5">
-        <!-- SeÃ§Ã£o de Cancelar Corrida -->
+        <!-- Seção de Cancelar Corrida -->
         <div class="section-header" id="cancelar-corrida">
             <h3>Cancelar Corrida</h3>
-            <p>Deseja cancelar a corrida? Se sim, clique no botÃ£o abaixo:</p>
+            <p>Deseja cancelar a corrida? Se sim, clique no botão abaixo:</p>
             <button class="btn btn-custom-cancel w-100" id="submit-cancel">Cancelar Corrida</button>
         </div>
 
-  <!-- Seção de Denúncia -->
+
+   <!-- Seção de Denúncia -->
     <section class="py-5 bg-light">
         <div class="container">
             <h3>Denunciar</h3>
@@ -188,7 +189,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p><%= session.getAttribute("successMessage") %></p>
+                    <p>Denúncia enviada com sucesso!</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
@@ -196,6 +197,7 @@
             </div>
         </div>
     </div>
+
 
       <!-- Chat com o Cliente -->
                 <div id="chat" class="tab-content mt-5">
@@ -272,11 +274,12 @@ document.getElementById('confirmLogoutButton').addEventListener('click', functio
     
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            var successMessage = "<%= session.getAttribute("successMessage") %>";
-            if (successMessage) {
+            var denunciaEnviada = <%= session.getAttribute("denunciaEnviada") != null %>;
+            if (denunciaEnviada) {
                 var successModal = new bootstrap.Modal(document.getElementById('successModal'));
                 successModal.show();
-                session.removeAttribute("successMessage");
+                // Remover a flag da sessão após exibir o modal
+                <% session.removeAttribute("denunciaEnviada"); %>
             }
         });
     </script>
