@@ -7,17 +7,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * Author: asus
  */
 public class CadastroUser extends HttpServlet {
@@ -36,8 +33,30 @@ public class CadastroUser extends HttpServlet {
 
         String nome = request.getParameter("nome");
         String email = request.getParameter("email");
-        int telefone = Integer.parseInt(request.getParameter("numero"));
+        String telefoneStr = request.getParameter("numero");
         String senha = request.getParameter("senha");
+
+        int telefone;
+        try {
+            telefone = Integer.parseInt(telefoneStr);
+        } catch (NumberFormatException e) {
+            request.setAttribute("errorMessage", "Número de telefone inválido.");
+            request.setAttribute("showRegisterModal", true);
+            request.getRequestDispatcher("index.jsp").forward(request, response);
+            return;
+        }
+
+        // Criptografar a senha
+        String senhaCriptografada;
+        try {
+            senhaCriptografada = criptografarSenha(senha);
+        } catch (NoSuchAlgorithmException e) {
+            logger.log(Level.SEVERE, "Erro ao criptografar a senha", e);
+            request.setAttribute("errorMessage", "Erro interno. Tente novamente mais tarde.");
+            request.setAttribute("showRegisterModal", true);
+            request.getRequestDispatcher("index.jsp").forward(request, response);
+            return;
+        }
 
         EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
 
@@ -46,8 +65,9 @@ public class CadastroUser extends HttpServlet {
             TypedQuery<Usuarios> queryEmail = em.createQuery("SELECT u FROM Usuarios u WHERE u.email = :email", Usuarios.class);
             queryEmail.setParameter("email", email);
             if (!queryEmail.getResultList().isEmpty()) {
-                String errorMessage = URLEncoder.encode("Email já está em uso. Por favor, use outro email.", StandardCharsets.UTF_8);
-                response.sendRedirect("index.jsp?error=" + errorMessage);
+                request.setAttribute("errorMessage", "Email já está em uso. Por favor, use outro email.");
+                request.setAttribute("showRegisterModal", true);
+                request.getRequestDispatcher("index.jsp").forward(request, response);
                 return;
             }
 
@@ -55,25 +75,30 @@ public class CadastroUser extends HttpServlet {
             TypedQuery<Usuarios> queryTelefone = em.createQuery("SELECT u FROM Usuarios u WHERE u.telefone = :telefone", Usuarios.class);
             queryTelefone.setParameter("telefone", telefone);
             if (!queryTelefone.getResultList().isEmpty()) {
-                String errorMessage = URLEncoder.encode("Telefone já está em uso. Por favor, use outro telefone.", StandardCharsets.UTF_8);
-                response.sendRedirect("index.jsp?error=" + errorMessage);
+                request.setAttribute("errorMessage", "Telefone já está em uso. Por favor, use outro número.");
+                request.setAttribute("showRegisterModal", true);
+                request.getRequestDispatcher("index.jsp").forward(request, response);
                 return;
             }
 
-            // Criação da instância de `Usuarios`
-            Usuarios usuarios = new Usuarios(nome, email, telefone, senha);
-
-            // Persistir os dados no banco de dados
+            // Criar e salvar usuário com senha criptografada
+            Usuarios usuario = new Usuarios(nome, email, telefone, senhaCriptografada);
             em.getTransaction().begin();
-            em.persist(usuarios);
+            em.persist(usuario);
             em.getTransaction().commit();
+
+            // Criar sessão para o usuário cadastrado
+            HttpSession session = request.getSession();
+            session.setAttribute("usuario", usuario);
+
+            // Encaminhar para a página com os dados do usuário
             response.sendRedirect("utilizador.jsp");
+
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Erro ao cadastrar usuário", e);
-            response.setContentType("text/html");
-            PrintWriter out = response.getWriter();
-            out.println("<h1>Erro ao cadastrar usuário</h1>");
-            out.println("<p>" + e.getMessage() + "</p>");
+            request.setAttribute("errorMessage", "Erro ao cadastrar usuário: " + e.getMessage());
+            request.setAttribute("showRegisterModal", true);
+            request.getRequestDispatcher("index.jsp").forward(request, response);
         } finally {
             if (em != null) {
                 em.close();
@@ -81,6 +106,13 @@ public class CadastroUser extends HttpServlet {
         }
     }
 
+    /**
+     * Método para criptografar a senha usando SHA-256.
+     *
+     * @param senha A senha a ser criptografada
+     * @return A senha criptografada
+     * @throws NoSuchAlgorithmException Caso o algoritmo SHA-256 não seja encontrado
+     */
     private String criptografarSenha(String senha) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] hash = md.digest(senha.getBytes());
@@ -93,6 +125,6 @@ public class CadastroUser extends HttpServlet {
 
     @Override
     public String getServletInfo() {
-        return "Servlet de cadastro de usuários";
+        return "Servlet de cadastro de usuários com sessão";
     }
 }

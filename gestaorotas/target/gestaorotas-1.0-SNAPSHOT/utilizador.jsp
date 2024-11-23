@@ -1,5 +1,14 @@
 <%@ page import="com.gestaorotas.model.Usuarios" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    // Verificar se o usuário está logado
+    Usuarios usuario = (Usuarios) session.getAttribute("usuario");
+    if (usuario == null) {
+        // Se não estiver logado, redireciona para a página de login
+        response.sendRedirect("index.jsp");
+        return; // Impede que o restante do código da página seja executado
+    }
+%>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -8,10 +17,9 @@
     <title>Painel de Controle do Cliente - Taxi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-       <link rel="stylesheet" href="css/utilizador.css">
+    <link rel="stylesheet" href="css/utilizador.css">
 </head>
 <body>
-
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-warning">
         <div class="container-fluid">
@@ -23,7 +31,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <!-- Outras opÃ§Ãµes do menu -->
                     <li class="nav-item">
                         <a class="nav-link" href="#historico-corridas">Historico de Corridas</a>
                     </li>
@@ -33,7 +40,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#denunciar">Denunciar</a>
                     </li>
-                    <!-- Avatar do usuÃ¡rio -->
+                    <!-- Avatar do usuário -->
                     <li class="nav-item">
                         <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAO5JREFUSEvVldENwjAMRK+bwCTAJjAJMAlsApsAkwCHEtS6jm0ligSWqvaj9bPPznVA5xg650cUsACwB7B9X3cAVwDH9GzWGAGsAVyULATtEqwIiQBuANiBFoQsrRY8ACU5OXPaWF14gEPS3mJwFnxPDQ9Q0n+cjHM41wKoPQfcbQYszOrC1J8fexLlzvM5IIyRV5T35nPg5fhtANdvleYgK82W8ahZU2rNA1baHg2m2oY25Mjul3SfbZUGsLzHG/jMmyQgYg0eZGIdEkDdaXAtwX8FpfqEBLTIk3NOZJKAZ0vpo2+/eaNWUc39f8ALCDsoGfKFTMgAAAAASUVORK5CYII=" alt="Avatar" class="avatar" data-bs-toggle="modal" data-bs-target="#userProfileModal">
                     </li>
@@ -42,68 +49,49 @@
         </div>
     </nav>
 
-<!-- Modal do Perfil do Usuário -->
-<div class="modal fade" id="userProfileModal" tabindex="-1" aria-labelledby="userProfileModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="userProfileModalLabel">Perfil do Usuário</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="text-center mb-3">
-                    <!-- Imagem do avatar -->
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAO5JREFUSEvVldENwjAMRK+bwCTAJjAJMAlsApsAkwCHEtS6jm0ligSWqvaj9bPPznVA5xg650cUsACwB7B9X3cAVwDH9GzWGAGsAVyULATtEqwIiQBuANiBFoQsrRY8ACU5OXPaWF14gEPS3mJwFnxPDQ9Q0n+cjHM41wKoPQfcbQYszOrC1J8fexLlzvM5IIyRV5T35nPg5fhtANdvleYgK82W8ahZU2rNA1baHg2m2oY25Mjul3SfbZUGsLzHG/jMmyQgYg0eZGIdEkDdaXAtwX8FpfqEBLTIk3NOZJKAZ0vpo2+/eaNWUc39f8ALCDsoGfKFTMgAAAAASUVORK5CYII=" alt="Avatar" class="avatar" style="width: 100px; height: 100px;">
-                    <p class="mt-2">Clique na imagem para alterar a foto de perfil.</p>
+    <!-- Modal do Perfil do Usuário -->
+    <div class="modal fade" id="userProfileModal" tabindex="-1" aria-labelledby="userProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userProfileModalLabel">Perfil do Usuário</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                
-                <!-- Formulário para alterar a foto de perfil -->
-                <form id="profilePhotoForm">
-                    <input type="file" class="form-control" id="profilePhoto" accept="image/*">
-                    <button type="submit" class="btn btn-primary w-100 mt-3">Alterar Foto de Perfil</button>
-                </form>
-                
-                <!-- Dados do usuário -->
-                <div class="mt-4">
-                    <% 
-                        // Recuperar o usuário da sessão
-                        Usuarios usuario = (Usuarios) session.getAttribute("usuario");
-                        if (usuario != null) {
-                    %>
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAO5JREFUSEvVldENwjAMRK+bwCTAJjAJMAlsApsAkwCHEtS6jm0ligSWqvaj9bPPznVA5xg650cUsACwB7B9X3cAVwDH9GzWGAGsAVyULATtEqwIiQBuANiBFoQsrRY8ACU5OXPaWF14gEPS3mJwFnxPDQ9Q0n+cjHM41wKoPQfcbQYszOrC1J8fexLlzvM5IIyRV5T35nPg5fhtANdvleYgK82W8ahZU2rNA1baHg2m2oY25Mjul3SfbZUGsLzHG/jMmyQgYg0eZGIdEkDdaXAtwX8FpfqEBLTIk3NOZJKAZ0vpo2+/eaNWUc39f8ALCDsoGfKFTMgAAAAASUVORK5CYII=" alt="Avatar" class="avatar" style="width: 100px; height: 100px;">
+                        <p class="mt-2">Clique na imagem para alterar a foto de perfil.</p>
+                    </div>
+
+                    <!-- Formulário para alterar a foto de perfil -->
+                    <form id="profilePhotoForm">
+                        <input type="file" class="form-control" id="profilePhoto" accept="image/*">
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Alterar Foto de Perfil</button>
+                    </form>
+
+                    <!-- Dados do usuário -->
+                    <div class="mt-4">
                         <p><strong>Nome:</strong> <%= usuario.getNome() %></p>
                         <p><strong>Telefone:</strong> <%= usuario.getTelefone() %></p>
                         <p><strong>Email:</strong> <%= usuario.getEmail() %></p>
-                    <% 
-                        } else { 
-                    %>
-                        <script type="text/javascript">
-                            var myModal = new bootstrap.Modal(document.getElementById('loginModal'), {
-                                keyboard: false
-                            });
-                            document.getElementById('errorMessage').innerText = "Você não fez login. Redirecionando para a página inicial.";
-                            myModal.show();
-                        </script>
-                    <% 
-                        } 
-                    %>
 
-                    <!-- Botão de logout -->
-                    <form id="logoutForm" action="LogoutServlet" method="post" class="mt-3">
-                        <button type="submit" class="btn btn-danger w-100">Logout</button>
-                    </form>
-                    
-                    <!-- Botão para abrir o modal de exclusão de conta -->
-                    <button type="button" class="btn btn-danger w-100 mt-3" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
-                        Deletar Conta
-                    </button>
+                        <!-- Botão de logout -->
+                        <form id="logoutForm" action="LogoutServlet" method="post" class="mt-3">
+                            <button type="submit" class="btn btn-danger w-100">Logout</button>
+                        </form>
 
-                    <!-- Botão para editar perfil -->
-                    <a href="perfil.jsp" class="btn btn-warning w-100 mt-3"><i class="fas fa-taxi"></i> Editar</a>
+                        <!-- Botão para abrir o modal de exclusão de conta -->
+                        <button type="button" class="btn btn-danger w-100 mt-3" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                            Deletar Conta
+                        </button>
+
+                        <!-- Botão para editar perfil -->
+                        <a href="perfil.jsp" class="btn btn-warning w-100 mt-3"><i class="fas fa-taxi"></i> Editar</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
                     <!-- Modal de Confirmação -->
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
@@ -246,7 +234,7 @@
             <ul>
                 <li><strong>Polícia:</strong> 112</li>
                 <li><strong>Bombeiros:</strong> 193</li>
-                <li><strong>Central de Táxi:</strong> +258 800 123 456</li>
+                <li><strong>Central de Táxi:</strong> +258 844 272 434</li>
             </ul>
         </div>
     </div>
@@ -270,6 +258,14 @@ document.getElementById('confirmLogoutButton').addEventListener('click', functio
     document.getElementById('logoutForm').submit();
 });
 
+    </script>
+    
+    <!-- Script para verificar a sessão -->
+    <script>
+        // Se não estiver logado, redireciona para o login
+        if (!<%= session.getAttribute("usuario") != null %>) {
+            window.location.href = "login.jsp";
+        }
     </script>
     
     <script>

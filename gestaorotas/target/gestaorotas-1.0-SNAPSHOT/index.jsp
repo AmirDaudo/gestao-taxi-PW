@@ -132,6 +132,7 @@
             </div>
         </div>
     </section>
+    
 <!-- Modal de Login -->
 <div class="modal fade" id="loginModal">
     <div class="modal-dialog">
@@ -195,7 +196,6 @@
                             <span class="input-group-text">+258</span>
                             <input type="tel" class="form-control" name="numero" id="phoneRegister" placeholder="Número de celular" required>
                         </div>
-                        <div class="error" id="phoneRegisterError" style="display: none;">Por favor, insira apenas números.</div>
                     </div>
                     <div class="mb-3">
                         <label for="passwordRegister" class="form-label">Senha</label>
@@ -204,24 +204,24 @@
                     <div class="mb-3">
                         <label for="confirmPasswordRegister" class="form-label">Confirme sua Senha</label>
                         <input type="password" class="form-control" id="confirmPasswordRegister" placeholder="Confirme sua senha" required>
-                        <div class="error" id="passwordMatchError" style="display: none;">As senhas não coincidem.</div>
                     </div>
-                    <button type="submit" class="btn btn-warning w-100">Cadastrar</button>
-                </form>
-
-                <!-- Seção para cadastro com redes sociais -->
+                    <!-- Exibição de mensagem de erro -->
+                    <c:if test="${not empty errorMessage}">
+                        <div class="alert alert-danger" role="alert">${errorMessage}</div>
+                    </c:if>
+                     <!-- Seção para cadastro com redes sociais -->
                 <div class="text-center mt-4">
                     <p>Ou cadastre-se com:</p>
                     <button class="btn btn-danger w-100 mb-2"><i class="fab fa-google"></i> Cadastre-se com Google</button>
                     <button class="btn btn-dark w-100"><i class="fab fa-apple"></i> Cadastre-se com iCloud</button>
                 </div>
-                <div class="mt-3 text-center">
-                    <p>Já tem uma conta? <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">Login</a></p>
-                </div>
+                    <button type="submit" class="btn btn-warning w-100">Cadastrar</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
    
 <!-- Modal de Cadastro do Motorista -->
 <div class="modal fade" id="driverModal" tabindex="-1" aria-labelledby="driverModalLabel" aria-hidden="true">
@@ -405,6 +405,14 @@ document.getElementById('registerForm').addEventListener('submit', function(even
                 document.getElementById('errorMessage').innerText = decodeURIComponent(params.get('error'));
                 var myModal = new bootstrap.Modal(document.getElementById('errorModal'), { keyboard: false });
                 myModal.show(); } }; function redirectToIndex() { window.location.href = "index.jsp"; } </script>
+
+<script>
+    // Reabre o modal automaticamente se houver um erro no registro
+    <% if (request.getAttribute("showRegisterModal") != null && (boolean) request.getAttribute("showRegisterModal")) { %>
+        var registerModal = new bootstrap.Modal(document.getElementById('registerModal'), {});
+        registerModal.show();
+    <% } %>
+</script>
 
 </body>
 </html>
