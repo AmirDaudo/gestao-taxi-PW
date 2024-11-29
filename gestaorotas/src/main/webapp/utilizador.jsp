@@ -112,27 +112,26 @@
     </div>
 </div>
 
-    <!-- Restante do cÃ³digo HTML do painel do cliente, mapa e formulÃ¡rios -->
-    <!-- Container principal -->
-    <div class="container mt-3">
-        <h1 class="text-center">Solicitação de Táxi</h1>
-
-        <!-- Mapa da localização -->
-        <div id="map"></div>
-
-        <!-- Formulário de Solicitação de Táxi -->
-        <form id="taxi-form" class="mt-4">
-            <div class="mb-3">
-                <label for="pickup" class="form-label">Local de Partida</label>
-                <input type="text" class="form-control" id="pickup" readonly>
-            </div>
-            <div class="mb-3">
-                <label for="destination" class="form-label">Destino</label>
-                <input type="text" class="form-control" id="destination" placeholder="Digite o destino">
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Solicitar Táxi</button>
-        </form>
-  
+  <!-- Container principal -->
+<div class="container mt-3">
+    <h1 class="text-center">Solicitação de Táxi</h1>
+    
+    <!-- Mapa da localização -->
+    <div id="map"></div>
+    
+    <!-- Formulário de Solicitação de Táxi -->
+    <form id="taxi-form" class="mt-4">
+        <div class="mb-3">
+            <label for="pickup" class="form-label">Local de Partida</label>
+            <input type="text" class="form-control" id="pickup" readonly>
+        </div>
+        <div class="mb-3">
+            <label for="destination" class="form-label">Destino</label>
+            <input type="text" class="form-control" id="destination" placeholder="Digite o destino">
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Solicitar Táxi</button>
+    </form>
+    
     <!-- Seção de Histórico de Corridas -->
     <div class="container mt-5" id="historico-corridas">
         <div class="section-header">
@@ -142,6 +141,35 @@
             </ul>
         </div>
     </div>
+</div>
+
+<script>
+document.getElementById('taxi-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const pickup = document.getElementById('pickup').value;
+    const destination = document.getElementById('destination').value;
+    
+    fetch('TaxiRequestServlet', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `pickup=${pickup}&destination=${destination}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert(data.message);
+        } else if (data.error) {
+            alert(data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+</script>
+
+
 
     <!-- Outras Funcionalidades: Cancelar Corrida, Denunciar, etc. -->
     <div class="container mt-5">
@@ -187,23 +215,17 @@
     </div>
 
 
-      <!-- Chat com o Cliente -->
-                <div id="chat" class="tab-content mt-5">
-                    <h3 class="mb-4">Chat com Motorista</h3>
-                    <div class="chat-box" id="chatBox">
-                        <div class="message client">
-                            <p>Olá, estou a caminho?</p>
+       <!-- Chat com o Cliente -->
+            <div id="chat" class="tab-content mt-5">
+                <h3 class="mb-4">Chat</h3>
+                <div class="chat-box" id="chatBox" style="height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+        <!-- Mensagens dinâmicas serão exibidas aqui -->
+             </div>
+                <div class="input-group mt-3">
+                <input type="text" class="form-control" id="chatInput" placeholder="Escreva uma mensagem">
+                    <button class="btn btn-warning" id="sendButton">Enviar</button>
+                      </div>
                         </div>
-                        <div class="message driver">
-                            <p>esta bem, estou a sua espera.</p>
-                        </div>
-                        <!-- Novas mensagens aparecerão aqui -->
-                    </div>
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="chatInput" placeholder="Escreva uma mensagem">
-                        <button class="btn btn-warning" id="sendButton">Enviar</button>
-                    </div>
-                </div>
       
       <!-- Modal de Exclusão de Conta -->
 <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
@@ -279,5 +301,37 @@ document.getElementById('confirmLogoutButton').addEventListener('click', functio
             }
         });
     </script>
+    
+    <script>
+    const chatBox = document.getElementById('chatBox');
+    const chatInput = document.getElementById('chatInput');
+    const sendButton = document.getElementById('sendButton');
+    const userId = '<%= session.getAttribute("userId") %>'; // Exemplo: ID do motorista ou cliente
+    const targetId = '<%= request.getParameter("targetId") %>'; // ID do destinatário
+
+    const ws = new WebSocket(`ws://${location.host}/nome-do-seu-projeto/chat?${userId}`);
+
+    ws.onmessage = (event) => {
+        const message = document.createElement('div');
+        message.classList.add('message', 'client'); // Customize classe com base no remetente
+        message.innerHTML = `<p>${event.data}</p>`;
+        chatBox.appendChild(message);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    };
+
+    sendButton.onclick = () => {
+        const message = chatInput.value.trim();
+        if (message) {
+            ws.send(`${targetId}|${message}`); // Envia para o destinatário
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', 'driver'); // Customize classe com base no remetente
+            messageDiv.innerHTML = `<p>${message}</p>`;
+            chatBox.appendChild(messageDiv);
+            chatInput.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    };
+</script>
+
     </body>
 </html>

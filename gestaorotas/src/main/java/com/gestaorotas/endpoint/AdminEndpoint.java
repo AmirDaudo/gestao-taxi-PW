@@ -1,49 +1,59 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.gestaorotas.endpoint;
 
+import com.gestaorotas.model.Motoristas;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-
-/**
- *
- * @author asus
- */
-
+import java.util.ArrayList;
+import java.util.List;
 
 @ServerEndpoint("/admin")
 public class AdminEndpoint {
-    private static Set<Session> admins = Collections.synchronizedSet(new HashSet<>());
+    private static final List<Session> sessions = new ArrayList<>();
 
     @OnOpen
     public void onOpen(Session session) {
-        admins.add(session);
+        sessions.add(session);
     }
 
     @OnClose
     public void onClose(Session session) {
-        admins.remove(session);
+        sessions.remove(session);
     }
 
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
-        // Lógica para tratar mensagens dos administradores
+        for (Session s : sessions) {
+            if (s.isOpen()) {
+                s.getBasicRemote().sendText(message);
+            }
+        }
     }
 
-    public static void notificarAdministrador(String mensagem) throws IOException {
-        synchronized (admins) {
-            for (Session admin : admins) {
-                admin.getBasicRemote().sendText(mensagem);
+    public static void notificarMotorista(Motoristas motorista, String pickup, String destination) {
+        String notification = "Nova solicitação de táxi: Partida em " + pickup + " com destino " + destination;
+        for (Session session : sessions) {
+            if (session.isOpen()) {
+                try {
+                    session.getBasicRemote().sendText(notification);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void notificarAdministrador(String mensagem) {
+        for (Session session : sessions) {
+            if (session.isOpen()) {
+                try {
+                    session.getBasicRemote().sendText(mensagem);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

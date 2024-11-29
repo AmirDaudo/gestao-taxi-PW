@@ -132,8 +132,7 @@
             </div>
         </div>
     </section>
-    
-<!-- Modal de Login -->
+    <!-- Modal de Login -->
 <div class="modal fade" id="loginModal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -142,7 +141,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="loginForm" action="LoginServlet" method="get">
+                <!-- Exibição de mensagens de erro ou sucesso -->
+                <c:if test="${not empty param.error}">
+                    <div style="color:red;">${param.error}</div>
+                </c:if>
+                <c:if test="${not empty param.success}">
+                    <div style="color:green;">${param.success}</div>
+                </c:if>
+
+                <form id="loginForm" action="LoginServlet" method="post">
                     <div class="mb-3">
                         <label for="phoneLogin" class="form-label">Número de Telefone</label>
                         <div class="input-group">
@@ -158,6 +165,10 @@
                     <button type="submit" class="btn btn-warning w-100">Entrar</button>
                 </form>
 
+                <div class="mt-3 text-center">
+                    <p><a href="recuperar_senha.jsp" class="link-primary">Esqueci minha senha</a></p>
+                </div>
+
                 <!-- Seção para login com redes sociais -->
                 <div class="text-center mt-4">
                     <p>Ou faça login com:</p>
@@ -172,6 +183,7 @@
         </div>
     </div>
 </div>
+
    <!-- Modal de Cadastro -->
 <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -232,6 +244,14 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                    <!-- Exibição de mensagens de erro ou sucesso -->
+                    <c:if test="${not empty param.error}">
+                         <div style="color:red;">${param.error}</div>
+                      </c:if>
+                    <c:if test="${not empty param.success}">
+                          <div style="color:green;">${param.success}</div>
+                      </c:if>
+
                 <form id="driverForm" action="CadastroDriver" method="post" enctype="multipart/form-data">
                     <!-- Nome do Motorista -->
                     <div class="mb-3">
@@ -263,12 +283,13 @@
                         <input type="password" class="form-control" id="confirmDriverPassword" placeholder="Confirmar Senha" name="confirmar_senha" required>
                         <div class="error" id="driverPasswordMatchError" style="display: none;">As senhas não coincidem.</div>
                     </div>
-                    <!-- Fotos do Carro -->
+                   
                     <div class="mb-3">
                         <label for="carPhotos" class="form-label">Fotos do Carro (4 fotos)</label>
                         <input type="file" class="form-control" id="carPhotos" name="fotos_carro" accept="image/*" multiple required>
                         <small class="form-text text-muted">Carregue exatamente 4 fotos do carro.</small>
                     </div>
+
                     <!-- Marca do Carro -->
                     <div class="mb-3">
                         <label for="carBrand" class="form-label">Marca do Carro</label>

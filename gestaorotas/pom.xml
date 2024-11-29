@@ -28,6 +28,7 @@
             <version>6.2.0.Final</version> <!-- Substitua por uma versão compatível com Jakarta -->
         </dependency>
         
+        
         <!-- JDBC Driver for MySQL -->
         <dependency>
             <groupId>com.mysql</groupId>
@@ -46,7 +47,15 @@
             <version>2.17.2</version>
             <type>jar</type>
         </dependency>
-    </dependencies>
+    
+    <dependency>
+        <groupId>jakarta.platform</groupId>
+        <artifactId>jakarta.jakartaee-web-api</artifactId>
+        <version>10.0.0</version>
+        <scope>provided</scope>
+    </dependency>
+</dependencies>
+
     
     <build>
         <plugins>

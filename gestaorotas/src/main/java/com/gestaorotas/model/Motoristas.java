@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.gestaorotas.model;
 
 import jakarta.persistence.Basic;
@@ -38,11 +34,8 @@ import java.util.List;
     @NamedQuery(name = "Motoristas.findByMarcaCarro", query = "SELECT m FROM Motoristas m WHERE m.marcaCarro = :marcaCarro"),
     @NamedQuery(name = "Motoristas.findByModeloCarro", query = "SELECT m FROM Motoristas m WHERE m.modeloCarro = :modeloCarro"),
     @NamedQuery(name = "Motoristas.findByMatricula", query = "SELECT m FROM Motoristas m WHERE m.matricula = :matricula"),
-    @NamedQuery(name = "Motoristas.findByDisponibilidade", query = "SELECT m FROM Motoristas m WHERE m.disponibilidade = :disponibilidade"),
-    @NamedQuery(name = "Motoristas.findByFoto1Path", query = "SELECT m FROM Motoristas m WHERE m.foto1Path = :foto1Path"),
-    @NamedQuery(name = "Motoristas.findByFoto2Path", query = "SELECT m FROM Motoristas m WHERE m.foto2Path = :foto2Path"),
-    @NamedQuery(name = "Motoristas.findByFoto3Path", query = "SELECT m FROM Motoristas m WHERE m.foto3Path = :foto3Path"),
-    @NamedQuery(name = "Motoristas.findByFoto4Path", query = "SELECT m FROM Motoristas m WHERE m.foto4Path = :foto4Path")})
+    @NamedQuery(name = "Motoristas.findByDisponibilidade", query = "SELECT m FROM Motoristas m WHERE m.disponibilidade = :disponibilidade")
+})
 public class Motoristas implements Serializable {
 
     @Basic(optional = false)
@@ -51,7 +44,7 @@ public class Motoristas implements Serializable {
     @Column(name = "nome")
     private String nome;
     @Basic(optional = false)
-    @NotNull()
+    @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "telefone")
     private String telefone;
@@ -66,7 +59,6 @@ public class Motoristas implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "senha")
     private String senha;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -87,18 +79,23 @@ public class Motoristas implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "disponibilidade")
     private String disponibilidade;
-    @Size(max = 255)
-    @Column(name = "foto1_path")
-    private String foto1Path;
-    @Size(max = 255)
-    @Column(name = "foto2_path")
-    private String foto2Path;
-    @Size(max = 255)
-    @Column(name = "foto3_path")
-    private String foto3Path;
-    @Size(max = 255)
-    @Column(name = "foto4_path")
-    private String foto4Path;
+    
+    @Basic(optional = true)
+    @Column(name = "foto1", columnDefinition = "LONGBLOB")
+    private byte[] foto1;
+    
+    @Basic(optional = true)
+    @Column(name = "foto2", columnDefinition = "LONGBLOB")
+    private byte[] foto2;
+    
+    @Basic(optional = true)
+    @Column(name = "foto3", columnDefinition = "LONGBLOB")
+    private byte[] foto3;
+    
+    @Basic(optional = true)
+    @Column(name = "foto4", columnDefinition = "LONGBLOB")
+    private byte[] foto4;
+    
     @OneToMany(mappedBy = "idMotorista")
     private List<Corridas> corridasList;
     private static final long serialVersionUID = 1L;
@@ -135,7 +132,6 @@ public class Motoristas implements Serializable {
         this.id = id;
     }
 
-
     public String getMarcaCarro() {
         return marcaCarro;
     }
@@ -152,37 +148,36 @@ public class Motoristas implements Serializable {
         this.modeloCarro = modeloCarro;
     }
 
-
-    public String getFoto1Path() {
-        return foto1Path;
+    public byte[] getFoto1() {
+        return foto1;
     }
 
-    public void setFoto1Path(String foto1Path) {
-        this.foto1Path = foto1Path;
+    public void setFoto1(byte[] foto1) {
+        this.foto1 = foto1;
     }
 
-    public String getFoto2Path() {
-        return foto2Path;
+    public byte[] getFoto2() {
+        return foto2;
     }
 
-    public void setFoto2Path(String foto2Path) {
-        this.foto2Path = foto2Path;
+    public void setFoto2(byte[] foto2) {
+        this.foto2 = foto2;
     }
 
-    public String getFoto3Path() {
-        return foto3Path;
+    public byte[] getFoto3() {
+        return foto3;
     }
 
-    public void setFoto3Path(String foto3Path) {
-        this.foto3Path = foto3Path;
+    public void setFoto3(byte[] foto3) {
+        this.foto3 = foto3;
     }
 
-    public String getFoto4Path() {
-        return foto4Path;
+    public byte[] getFoto4() {
+        return foto4;
     }
 
-    public void setFoto4Path(String foto4Path) {
-        this.foto4Path = foto4Path;
+    public void setFoto4(byte[] foto4) {
+        this.foto4 = foto4;
     }
 
     @Override
@@ -257,7 +252,6 @@ public class Motoristas implements Serializable {
     public void setDisponibilidade(String disponibilidade) {
         this.disponibilidade = disponibilidade;
     }
-
 
     @XmlTransient
     public List<Corridas> getCorridasList() {

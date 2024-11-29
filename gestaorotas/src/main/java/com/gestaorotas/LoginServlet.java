@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,26 +60,61 @@ public class LoginServlet extends HttpServlet {
                 Usuarios usuario = null;
                 Motoristas motorista = null;
 
-                // Verificar na tabela de Usuários
+                // Criptografar a senha fornecida para a comparação
+                String senhaCriptografada = criptografarSenha(senha);
+
+                // Tentar verificar com a senha criptografada
                 TypedQuery<Usuarios> queryUser = em.createQuery("SELECT u FROM Usuarios u WHERE u.telefone = :telefone AND u.senha = :senha", Usuarios.class);
                 queryUser.setParameter("telefone", telefone);
-                queryUser.setParameter("senha", senha);
+                queryUser.setParameter("senha", senhaCriptografada);
 
                 try {
                     usuario = queryUser.getSingleResult();
                 } catch (Exception e) {
-                    logger.log(Level.INFO, "Não encontrado na tabela de Usuários", e);
+                    logger.log(Level.INFO, "Não encontrado na tabela de Usuários com a senha criptografada", e);
+                }
+
+                if (usuario == null) {
+                    // Verificar com senha não criptografada
+                    queryUser = em.createQuery("SELECT u FROM Usuarios u WHERE u.telefone = :telefone AND u.senha = :senha", Usuarios.class);
+                    queryUser.setParameter("telefone", telefone);
+                    queryUser.setParameter("senha", senha);
+                    try {
+                        usuario = queryUser.getSingleResult();
+                        // Atualizar a senha para a versão criptografada
+                        em.getTransaction().begin();
+                        usuario.setSenha(senhaCriptografada);
+                        em.getTransaction().commit();
+                    } catch (Exception e) {
+                        logger.log(Level.INFO, "Não encontrado na tabela de Usuários com a senha em texto simples", e);
+                    }
                 }
 
                 if (usuario == null) {
                     // Verificar na tabela de Motoristas
                     TypedQuery<Motoristas> queryDriver = em.createQuery("SELECT m FROM Motoristas m WHERE m.telefone = :telefone AND m.senha = :senha", Motoristas.class);
                     queryDriver.setParameter("telefone", telefone);
-                    queryDriver.setParameter("senha", senha);
+                    queryDriver.setParameter("senha", senhaCriptografada);
                     try {
                         motorista = queryDriver.getSingleResult();
                     } catch (Exception e) {
-                        logger.log(Level.INFO, "Não encontrado na tabela de Motoristas", e);
+                        logger.log(Level.INFO, "Não encontrado na tabela de Motoristas com a senha criptografada", e);
+                    }
+
+                    if (motorista == null) {
+                        // Verificar com senha não criptografada
+                        queryDriver = em.createQuery("SELECT m FROM Motoristas m WHERE m.telefone = :telefone AND m.senha = :senha", Motoristas.class);
+                        queryDriver.setParameter("telefone", telefone);
+                        queryDriver.setParameter("senha", senha);
+                        try {
+                            motorista = queryDriver.getSingleResult();
+                            // Atualizar a senha para a versão criptografada
+                            em.getTransaction().begin();
+                            motorista.setSenha(senhaCriptografada);
+                            em.getTransaction().commit();
+                        } catch (Exception e) {
+                            logger.log(Level.INFO, "Não encontrado na tabela de Motoristas com a senha em texto simples", e);
+                        }
                     }
                 }
 
@@ -91,14 +128,28 @@ public class LoginServlet extends HttpServlet {
                     AdminEndpoint.notificarAdministrador("Motorista " + motorista.getNome() + " está online.");
                     response.sendRedirect("motorista.jsp");
                 } else {
-                    response.getWriter().println("Credenciais inválidas. Tente novamente.");
+                    response.sendRedirect("index.jsp");
                 }
 
             } finally {
                 em.close();
             }
         } else {
-            response.getWriter().println("Campos de telefone ou senha não podem estar vazios.");
+            response.sendRedirect("index.jsp");
+        }
+    }
+
+    private String criptografarSenha(String senha) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(senha.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Erro ao criptografar a senha", e);
         }
     }
 }

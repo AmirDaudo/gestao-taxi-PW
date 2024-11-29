@@ -6,6 +6,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.gestaorotas.model.Motoristas" %>
 
+<%@ page import="com.gestaorotas.model.Usuarios" %>
+<%
+    Usuarios usuario = (Usuarios) session.getAttribute("usuario");
+    String adminName = (String) session.getAttribute("adminName");
+    if (usuario == null && adminName == null) {
+        response.sendRedirect("index.jsp");
+        return;
+    }
+%>
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -45,6 +55,7 @@
             </div>
         </div>
     </nav>
+      <h1>Bem-vindo, <%= adminName != null ? adminName : usuario.getNome() %>!</h1>
 
     <header class="bg-dark text-light text-center py-4">
         <h1>Painel do Administrador</h1>
@@ -100,10 +111,14 @@
                 </div>
             </div>
         </section>
-           
-          <div class="container mt-5">
-        <h1>Motoristas Logados</h1>
-        <div class="table-responsive">
+        
+         <div class="container mt-5">
+        <h3>Motoristas Cadastrados</h3>
+        <form action="MotoristasCadastradosServlet" method="get">
+            <button type="submit" class="btn btn-primary">Carregar Motoristas</button>
+        </form>
+        
+        <div class="table-responsive mt-3">
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -112,27 +127,34 @@
                         <th>Email</th>
                         <th>Telefone</th>
                         <th>Disponibilidade</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     <%
-                        List<Motoristas> motoristasLogados = (List<Motoristas>) request.getAttribute("motoristasLogados");
-                        if (motoristasLogados != null) {
-                            for (Motoristas motorista : motoristasLogados) {
+                        List<Motoristas> motoristasCadastrados = (List<Motoristas>) request.getAttribute("motoristasCadastrados");
+                        if (motoristasCadastrados != null && !motoristasCadastrados.isEmpty()) {
+                            for (Motoristas motorista : motoristasCadastrados) {
                     %>
                     <tr>
                         <td><%= motorista.getId() %></td>
-                        <td><%= motorista.getNome() %></td>
+                        <td><a href="detalhes_motorista.jsp?id=<%= motorista.getId() %>"><%= motorista.getNome() %></a></td>
                         <td><%= motorista.getEmail() %></td>
                         <td><%= motorista.getTelefone() %></td>
                         <td><%= motorista.getDisponibilidade() %></td>
+                        <td>
+                            <form action="ApagarMotoristaServlet" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="<%= motorista.getId() %>">
+                                <button type="submit" class="btn btn-danger">Apagar</button>
+                            </form>
+                        </td>
                     </tr>
                     <%
                             }
                         } else {
                     %>
                     <tr>
-                        <td colspan="5">Nenhum motorista logado.</td>
+                        <td colspan="6">Nenhum motorista cadastrado.</td>
                     </tr>
                     <%
                         }
@@ -140,9 +162,8 @@
                 </tbody>
             </table>
         </div>
-    </div>
-
-  
+    </div>       
+                
         <!-- Atividades e Status dos Motoristas -->
         <section class="dashboard mb-4" id="atividades-recentes">
             <div class="section-title">

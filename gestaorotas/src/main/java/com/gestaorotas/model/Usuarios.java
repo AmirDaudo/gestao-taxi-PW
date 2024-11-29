@@ -25,20 +25,26 @@ import java.util.List;
     @NamedQuery(name = "Usuarios.findByNome", query = "SELECT u FROM Usuarios u WHERE u.nome = :nome"),
     @NamedQuery(name = "Usuarios.findByEmail", query = "SELECT u FROM Usuarios u WHERE u.email = :email"),
     @NamedQuery(name = "Usuarios.findByTelefone", query = "SELECT u FROM Usuarios u WHERE u.telefone = :telefone"),
-    @NamedQuery(name = "Usuarios.findBySenha", query = "SELECT u FROM Usuarios u WHERE u.senha = :senha")})
+    @NamedQuery(name = "Usuarios.findBySenha", query = "SELECT u FROM Usuarios u WHERE u.senha = :senha")
+})
 public class Usuarios implements Serializable {
 
     @Size(max = 255)
     @Column(name = "nome")
     private String nome;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    
     @Size(max = 255)
     @Column(name = "email")
     private String email;
+    
     @Size(max = 255)
     @Column(name = "senha")
     private String senha;
+
+    @Size(max = 255)
+    @Column(name = "reset_token")  // Adicionando a coluna reset_token
+    private String resetToken;
+    
     @OneToMany(mappedBy = "usuarioId")
     private List<Denuncias> denunciasList;
 
@@ -49,7 +55,6 @@ public class Usuarios implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-
 
     @Column(name = "telefone")
     private Integer telefone;
@@ -79,7 +84,6 @@ public class Usuarios implements Serializable {
         this.id = id;
     }
 
-
     public Integer getTelefone() {
         return telefone;
     }
@@ -106,7 +110,6 @@ public class Usuarios implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Usuarios)) {
             return false;
         }
@@ -121,7 +124,6 @@ public class Usuarios implements Serializable {
     public String toString() {
         return "com.gestaorotas.model.Usuarios[ id=" + id + " ]";
     }
-
 
     @XmlTransient
     public List<Denuncias> getDenunciasList() {
@@ -154,5 +156,13 @@ public class Usuarios implements Serializable {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
     }
 }

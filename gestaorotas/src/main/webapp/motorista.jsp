@@ -3,8 +3,20 @@
     Created on : 09/11/2024, 10:18:30
     Author     : asus
 --%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ page import="com.gestaorotas.model.Motoristas" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<%
+    // Verificar se o usuário está logado
+    Motoristas motorista = (Motoristas) session.getAttribute("motorista");
+    if (motorista == null) {
+        // Se não estiver logado, redireciona para a página de login
+        response.sendRedirect("index.jsp");
+        return; // Impede que o restante do código da página seja executado
+    }
+%>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -12,13 +24,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Área do Motorista - Taxi Service</title>
-    
-    <script type="text/javascript">
-        function redirectToLogin(message, url) 
-        {
-            alert(message); window.location.href = url;
-        }
-        </script>
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome Icons -->
@@ -32,7 +38,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-warning p-3">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.html">
-                <img src="Vetor.png" alt="Taxi Logo" width="90">
+                <img src="img/Vetor.png" alt="Taxi Logo" width="90">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,11 +92,6 @@
             <div class="col-lg-9">
                 <!-- Conteúdo Principal -->
                 <div id="dashboard" class="tab-content">
-                      <% 
-                        // Recuperar o usuário da sessão
-                        Motoristas motorista = (Motoristas) session.getAttribute("motorista");
-                        if (motorista != null) {
-                    %>
                     <!-- Dashboard -->
                     <h3 class="mb-4">Bem-vindo, <%= motorista.getNome() %> </h3> 
                     <div class="row text-center">
@@ -103,18 +104,7 @@
                                 </div>
                             </div>
                         </div>
-                          <% 
-                        } else { 
-                      %> 
-                            // Se o usuário não estiver logado, redirecionar para a página de login
-                           <script type="text/javascript">
-                             redirectToLogin("Você não fez login. Redirecionando para a página inicial.", "index.jsp");
-
-                        
-                           </script>
-                           <%       
-                        } 
-                    %>
+                    
                         <div class="col-md-4">
                             <div class="card border-0 shadow">
                                 <div class="card-body">
@@ -154,23 +144,17 @@
                     </div>
                 </div>
 
-                <!-- Chat com o Cliente -->
-                <div id="chat" class="tab-content mt-5">
-                    <h3 class="mb-4">Chat com Cliente</h3>
-                    <div class="chat-box" id="chatBox">
-                        <div class="message client">
-                            <p>Olá, você está disponível para essa corrida?</p>
+              <!-- Chat com o Cliente -->
+            <div id="chat" class="tab-content mt-5">
+                <h3 class="mb-4">Chat</h3>
+                <div class="chat-box" id="chatBox" style="height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+        <!-- Mensagens dinâmicas serão exibidas aqui -->
+             </div>
+                <div class="input-group mt-3">
+                <input type="text" class="form-control" id="chatInput" placeholder="Escreva uma mensagem">
+                    <button class="btn btn-warning" id="sendButton">Enviar</button>
+                      </div>
                         </div>
-                        <div class="message driver">
-                            <p>Sim, estou disponível. Podemos negociar o preço.</p>
-                        </div>
-                        <!-- Novas mensagens aparecerão aqui -->
-                    </div>
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="chatInput" placeholder="Escreva uma mensagem">
-                        <button class="btn btn-warning" id="sendButton">Enviar</button>
-                    </div>
-                </div>
 
                 <!-- Pagamentos -->
                 <div id="pagamentos" class="tab-content mt-5">
@@ -277,5 +261,37 @@
 
         }
     </script>
+    
+    <script>
+    const chatBox = document.getElementById('chatBox');
+    const chatInput = document.getElementById('chatInput');
+    const sendButton = document.getElementById('sendButton');
+    const userId = '<%= session.getAttribute("userId") %>'; // Exemplo: ID do motorista ou cliente
+    const targetId = '<%= request.getParameter("targetId") %>'; // ID do destinatário
+
+    const ws = new WebSocket(`ws://${location.host}/nome-do-seu-projeto/chat?${userId}`);
+
+    ws.onmessage = (event) => {
+        const message = document.createElement('div');
+        message.classList.add('message', 'client'); // Customize classe com base no remetente
+        message.innerHTML = `<p>${event.data}</p>`;
+        chatBox.appendChild(message);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    };
+
+    sendButton.onclick = () => {
+        const message = chatInput.value.trim();
+        if (message) {
+            ws.send(`${targetId}|${message}`); // Envia para o destinatário
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', 'driver'); // Customize classe com base no remetente
+            messageDiv.innerHTML = `<p>${message}</p>`;
+            chatBox.appendChild(messageDiv);
+            chatInput.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    };
+</script>
+
 </body>
 </html>

@@ -43,3 +43,18 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
             background-color: #ffc107;
             color: #fff;
         }
+        
+.message.client p {
+    background-color: #e0f7fa;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 80%;
+}
+
+.message.driver p {
+    background-color: #ffecb3;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 80%;
+    margin-left: auto;
+}

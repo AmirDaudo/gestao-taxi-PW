@@ -75,7 +75,7 @@
                 <% 
                     } else { 
                         // Se o motorista não estiver logado, redirecionar para a página de login
-                        response.sendRedirect("login.jsp");
+                        response.sendRedirect("index.jsp");
                     } 
                 %>
             </div>

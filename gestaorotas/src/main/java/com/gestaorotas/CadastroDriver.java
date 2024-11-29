@@ -1,21 +1,29 @@
 package com.gestaorotas;
 
 import com.gestaorotas.model.Motoristas;
+import com.gestaorotas.model.MotoristasJpaController;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
 @MultipartConfig
 public class CadastroDriver extends HttpServlet {
 
+    private static final Logger logger = Logger.getLogger(CadastroDriver.class.getName());
     private EntityManagerFactory emf;
 
     @Override
@@ -29,7 +37,7 @@ public class CadastroDriver extends HttpServlet {
         // Verificar se o checkbox dos termos foi marcado
         String termos = request.getParameter("termos");
         if (termos == null) {
-            response.getWriter().println("Você deve aceitar os Termos e Condições para se cadastrar.");
+            response.sendRedirect("index.jsp?error=Você deve aceitar os Termos e Condições para se cadastrar.");
             return;
         }
 
@@ -43,24 +51,19 @@ public class CadastroDriver extends HttpServlet {
         String matricula = request.getParameter("matricula");
         String disponibilidade = request.getParameter("disponibilidade");
 
-        // Diretório de upload
-        String uploadDir = getServletContext().getRealPath("") + File.separator + "uploads";
-        File uploadDirFile = new File(uploadDir);
-        if (!uploadDirFile.exists()) {
-            uploadDirFile.mkdirs();
-        }
+        // Criptografar a senha
+        String senhaCriptografada = criptografarSenha(senha);
 
-        // Processar e salvar as fotos do carro
-        Part[] fotos = request.getParts().stream()
+        // Processar e obter os bytes das fotos do carro
+        List<Part> fotos = request.getParts().stream()
                 .filter(part -> "fotos_carro".equals(part.getName()))
-                .toArray(Part[]::new);
+                .collect(Collectors.toList());
 
-        String[] fotoPaths = new String[fotos.length];
-        for (int i = 0; i < fotos.length; i++) {
-            String fileName = Paths.get(fotos[i].getSubmittedFileName()).getFileName().toString();
-            String uploadPath = uploadDir + File.separator + fileName;
-            fotos[i].write(uploadPath);
-            fotoPaths[i] = "uploads" + File.separator + fileName;
+        byte[][] fotoBytes = new byte[4][];
+        for (int i = 0; i < fotos.size() && i < 4; i++) {
+            try (InputStream inputStream = fotos.get(i).getInputStream()) {
+                fotoBytes[i] = inputStream.readAllBytes();
+            }
         }
 
         // Criar uma instância de Motoristas
@@ -68,26 +71,56 @@ public class CadastroDriver extends HttpServlet {
         motorista.setNome(nome);
         motorista.setTelefone(telefone);
         motorista.setEmail(email);
-        motorista.setSenha(senha);
+        motorista.setSenha(senhaCriptografada);
         motorista.setMarcaCarro(marcaCarro);
         motorista.setModeloCarro(modeloCarro);
         motorista.setMatricula(matricula);
         motorista.setDisponibilidade(disponibilidade);
-        motorista.setFoto1Path(fotoPaths.length > 0 ? fotoPaths[0] : null);
-        motorista.setFoto2Path(fotoPaths.length > 1 ? fotoPaths[1] : null);
-        motorista.setFoto3Path(fotoPaths.length > 2 ? fotoPaths[2] : null);
-        motorista.setFoto4Path(fotoPaths.length > 3 ? fotoPaths[3] : null);
+        motorista.setFoto1(fotoBytes.length > 0 ? fotoBytes[0] : null);
+        motorista.setFoto2(fotoBytes.length > 1 ? fotoBytes[1] : null);
+        motorista.setFoto3(fotoBytes.length > 2 ? fotoBytes[2] : null);
+        motorista.setFoto4(fotoBytes.length > 3 ? fotoBytes[3] : null);
 
         // Persistir os dados no banco de dados
         MotoristasJpaController motoristasController = new MotoristasJpaController(emf);
-        motoristasController.create(motorista);
+        try {
+            motoristasController.create(motorista);
+            logger.log(Level.INFO, "Motorista cadastrado com sucesso: {0}", motorista);
 
-        // Redirecionar ou enviar uma resposta ao cliente
-        response.sendRedirect("motorista.jsp");
+            // Criar sessão para o motorista e iniciar sessão
+            HttpSession session = request.getSession(true); // Cria uma nova sessão se não existir
+            session.setAttribute("motorista", motorista);
+            session.setAttribute("status", "online");
+            logger.log(Level.INFO, "Sessão iniciada para o motorista: {0}", motorista.getNome());
+
+            // Redirecionar para a página do motorista
+            response.sendRedirect("motorista.jsp?success=Cadastro realizado com sucesso.");
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Erro ao cadastrar motorista", e);
+            response.sendRedirect("cadastro_driver.jsp?error=Erro ao cadastrar: " + e.getMessage());
+        } finally {
+            emf.close();
+        }
+    }
+
+    private String criptografarSenha(String senha) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(senha.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Erro ao criptografar a senha", e);
+        }
     }
 
     @Override
     public void destroy() {
-        emf.close();
+        if (emf != null && emf.isOpen()) {
+            emf.close();
+        }
     }
 }
