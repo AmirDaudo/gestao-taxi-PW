@@ -111,13 +111,28 @@
                 </div>
             </div>
         </section>
+                    
+                         <!-- Motoristas Cadastrados -->
         
-         <div class="container mt-5">
+             <div class="container mt-5">
         <h3>Motoristas Cadastrados</h3>
         <form action="MotoristasCadastradosServlet" method="get">
             <button type="submit" class="btn btn-primary">Carregar Motoristas</button>
         </form>
-        
+
+        <!-- Exibir mensagens de sucesso ou erro -->
+        <%
+            String message = (String) request.getAttribute("message");
+            String status = (String) request.getAttribute("status");
+            if (message != null && status != null) {
+        %>
+            <div class="alert <%= status.equals("success") ? "alert-success" : "alert-danger" %>">
+                <%= message %>
+            </div>
+        <%
+            }
+        %>
+
         <div class="table-responsive mt-3">
             <table class="table table-bordered">
                 <thead>
@@ -126,6 +141,7 @@
                         <th>Nome</th>
                         <th>Email</th>
                         <th>Telefone</th>
+                        <th>Status</th>
                         <th>Disponibilidade</th>
                         <th>Ações</th>
                     </tr>
@@ -141,12 +157,21 @@
                         <td><a href="detalhes_motorista.jsp?id=<%= motorista.getId() %>"><%= motorista.getNome() %></a></td>
                         <td><%= motorista.getEmail() %></td>
                         <td><%= motorista.getTelefone() %></td>
+                        <td><%= motorista.getStatus() %></td>
                         <td><%= motorista.getDisponibilidade() %></td>
                         <td>
-                            <form action="ApagarMotoristaServlet" method="post" style="display:inline;">
-                                <input type="hidden" name="id" value="<%= motorista.getId() %>">
-                                <button type="submit" class="btn btn-danger">Apagar</button>
-                            </form>
+                            <% if (Boolean.TRUE.equals(motorista.getBloqueado())) { %>
+                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmUnblockModal" data-id="<%= motorista.getId() %>">
+                                    Desbloquear
+                                </button>
+                            <% } else { %>
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#confirmBlockModal" data-id="<%= motorista.getId() %>">
+                                    Bloquear
+                                </button>
+                            <% } %>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="<%= motorista.getId() %>">
+                                Apagar
+                            </button>
                         </td>
                     </tr>
                     <%
@@ -154,7 +179,7 @@
                         } else {
                     %>
                     <tr>
-                        <td colspan="6">Nenhum motorista cadastrado.</td>
+                        <td colspan="7">Nenhum motorista cadastrado encontrado. Carregue os motoristas cadastrados.</td>
                     </tr>
                     <%
                         }
@@ -162,17 +187,104 @@
                 </tbody>
             </table>
         </div>
-    </div>       
+    </div>
+
+    <!-- Modal de Confirmação de Bloqueio -->
+    <div class="modal fade" id="confirmBlockModal" tabindex="-1" aria-labelledby="confirmBlockModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmBlockModalLabel">Confirmar Bloqueio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Você tem certeza que deseja bloquear este motorista?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form id="blockForm" action="MotoristasCadastradosServlet" method="post">
+                        <input type="hidden" name="id" id="motoristaIdBloquear" value="">
+                        <input type="hidden" name="action" value="bloquear">
+                        <button type="submit" class="btn btn-warning">Bloquear</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Desbloqueio -->
+    <div class="modal fade" id="confirmUnblockModal" tabindex="-1" aria-labelledby="confirmUnblockModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmUnblockModalLabel">Confirmar Desbloqueio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Você tem certeza que deseja desbloquear este motorista?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form id="unblockForm" action="MotoristasCadastradosServlet" method="post">
+                        <input type="hidden" name="id" id="motoristaIdDesbloquear" value="">
+                        <input type="hidden" name="action" value="desbloquear">
+                        <button type="submit" class="btn btn-success">Desbloquear</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Exclusão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Você tem certeza que deseja apagar este motorista?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form id="deleteForm" action="ApagarMotoristaServlet" method="post">
+                        <input type="hidden" name="id" id="motoristaIdApagar" value="">
+                        <button type="submit" class="btn btn-danger">Apagar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+     
                 
-        <!-- Atividades e Status dos Motoristas -->
+      <!-- Exibir lista de motoristas online -->
         <section class="dashboard mb-4" id="atividades-recentes">
             <div class="section-title">
                 <h2>Atividades Recentes & Status dos Motoristas</h2>
             </div>
             <div class="activity-list">
-                <!-- Aqui aparecerão as notificações de atividade -->
+                <ul>
+                    <%
+                        List<Motoristas> motoristasOnline = (List<Motoristas>) request.getAttribute("motoristasOnline");
+                        if (motoristasOnline != null && !motoristasOnline.isEmpty()) {
+                            for (Motoristas motorista : motoristasOnline) {
+                    %>
+                        <li>
+                            <strong><%= motorista.getNome() %></strong> está online.
+                        </li>
+                    <%
+                            }
+                        } else {
+                    %>
+                    <li>Nenhum motorista online no momento.</li>
+                    <%
+                        }
+                    %>
+                </ul>
             </div>
         </section>
+
 
         <!-- Feedback Resumido -->
         <section class="dashboard mb-4" id="feedback">
@@ -213,20 +325,35 @@
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/admin.js"></script>
-    <!-- Adicionar o script WebSocket -->
+    
+ 
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const atividadeList = document.querySelector("#atividades-recentes .activity-list");
-        const ws = new WebSocket("ws://localhost:8080/gestaorotas-1.0-SNAPSHOT/admin");
+        // Script para definir o ID do motorista nos modais de confirmação
+        var confirmBlockModal = document.getElementById('confirmBlockModal');
+        confirmBlockModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var motoristaId = button.getAttribute('data-id');
+            var inputMotoristaIdBloquear = document.getElementById('motoristaIdBloquear');
+            inputMotoristaIdBloquear.value = motoristaId;
+        });
 
-        ws.onmessage = function (event) {
-            const mensagem = event.data;
-            const atividadeElement = document.createElement("div");
-            atividadeElement.classList.add("activity-item", "mb-3", "p-3", "border", "rounded", "bg-light");
-            atividadeElement.innerHTML = `<p><strong>${mensagem}</strong></p>`;
-            atividadeList.appendChild(atividadeElement);
-        };
-    });
+        var confirmUnblockModal = document.getElementById('confirmUnblockModal');
+        confirmUnblockModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var motoristaId = button.getAttribute('data-id');
+            var inputMotoristaIdDesbloquear = document.getElementById('motoristaIdDesbloquear');
+            inputMotoristaIdDesbloquear.value = motoristaId;
+        });
+
+        var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var motoristaId = button.getAttribute('data-id');
+            var inputMotoristaIdApagar = document.getElementById('motoristaIdApagar');
+            inputMotoristaIdApagar.value = motoristaId;
+        });
     </script>
+    
+    
 </body>
 </html>

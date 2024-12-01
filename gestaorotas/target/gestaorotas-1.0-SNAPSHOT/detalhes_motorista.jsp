@@ -19,6 +19,20 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
+    
+    <%
+            String message = (String) request.getAttribute("message");
+            String status = (String) request.getAttribute("status");
+            if (message != null && status != null) {
+        %>
+            <div class="alert <%= status.equals("success") ? "alert-success" : "alert-danger" %>">
+                <%= message %>
+            </div>
+        <%
+            }
+        %>
+
+
     <div class="container my-5">
         <%
             int motoristaId = Integer.parseInt(request.getParameter("id"));
@@ -39,6 +53,7 @@
                     <p><strong>Nome:</strong> <%= motorista.getNome() %></p>
                     <p><strong>Email:</strong> <%= motorista.getEmail() %></p>
                     <p><strong>Telefone:</strong> <%= motorista.getTelefone() %></p>
+                    <p><strong>Status:</strong> <%= motorista.getStatus() %><p>
                     <p><strong>Disponibilidade:</strong> 
                         <span class="badge <%= "bloqueado".equals(motorista.getDisponibilidade()) ? "bg-danger" : "bg-success" %>">
                             <%= motorista.getDisponibilidade() %>

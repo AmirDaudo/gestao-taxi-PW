@@ -25,6 +25,8 @@ CREATE TABLE motoristas (
     foto2 LONGBLOB,
     foto3 LONGBLOB,
     foto4 LONGBLOB
+    status VARCHAR(10) DEFAULT 'offline',
+ bloqueado BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE denuncias (
@@ -39,3 +41,7 @@ CREATE TABLE denuncias (
 );
 
 ALTER TABLE usuarios ADD reset_token VARCHAR(255);
+
+ALTER TABLE motoristas ADD COLUMN status VARCHAR(10);
+
+ALTER TABLE motoristas ADD COLUMN bloqueado BOOLEAN DEFAULT FALSE;

@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
@@ -17,13 +18,8 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- *
- * @author asus
- */
 @Entity
 @Table(name = "motoristas")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Motoristas.findAll", query = "SELECT m FROM Motoristas m"),
     @NamedQuery(name = "Motoristas.findById", query = "SELECT m FROM Motoristas m WHERE m.id = :id"),
@@ -34,7 +30,8 @@ import java.util.List;
     @NamedQuery(name = "Motoristas.findByMarcaCarro", query = "SELECT m FROM Motoristas m WHERE m.marcaCarro = :marcaCarro"),
     @NamedQuery(name = "Motoristas.findByModeloCarro", query = "SELECT m FROM Motoristas m WHERE m.modeloCarro = :modeloCarro"),
     @NamedQuery(name = "Motoristas.findByMatricula", query = "SELECT m FROM Motoristas m WHERE m.matricula = :matricula"),
-    @NamedQuery(name = "Motoristas.findByDisponibilidade", query = "SELECT m FROM Motoristas m WHERE m.disponibilidade = :disponibilidade")
+    @NamedQuery(name = "Motoristas.findByDisponibilidade", query = "SELECT m FROM Motoristas m WHERE m.disponibilidade = :disponibilidade"),
+    @NamedQuery(name = "Motoristas.findByStatus", query = "SELECT m FROM Motoristas m WHERE m.status = :status")
 })
 public class Motoristas implements Serializable {
 
@@ -43,73 +40,88 @@ public class Motoristas implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "nome")
     private String nome;
+
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Size(min = 1, max = 255)
     @Column(name = "telefone")
     private String telefone;
+
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "email")
     private String email;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "senha")
     private String senha;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "marca_carro")
     private String marcaCarro;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "modelo_carro")
     private String modeloCarro;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "matricula")
     private String matricula;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "disponibilidade")
     private String disponibilidade;
-    
-    @Basic(optional = true)
-    @Column(name = "foto1", columnDefinition = "LONGBLOB")
+
+    @Lob()
+    @Column(name = "foto1")
     private byte[] foto1;
-    
-    @Basic(optional = true)
-    @Column(name = "foto2", columnDefinition = "LONGBLOB")
+
+    @Lob()
+    @Column(name = "foto2")
     private byte[] foto2;
-    
-    @Basic(optional = true)
-    @Column(name = "foto3", columnDefinition = "LONGBLOB")
+
+    @Lob()
+    @Column(name = "foto3")
     private byte[] foto3;
-    
-    @Basic(optional = true)
-    @Column(name = "foto4", columnDefinition = "LONGBLOB")
+
+    @Lob()
+    @Column(name = "foto4")
     private byte[] foto4;
-    
-    @OneToMany(mappedBy = "idMotorista")
-    private List<Corridas> corridasList;
+    @Column(name = "bloqueado")
+    private Boolean bloqueado;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
 
+    @Basic(optional = true)
+    @Column(name = "status", nullable = false, columnDefinition = "VARCHAR(10) DEFAULT 'offline'")
+    private String status;
+
+    @OneToMany(mappedBy = "idMotorista")
+    private List<Corridas> corridasList;
+
     public Motoristas() {
+        this.status = "offline";  // Define o status padrão como offline
     }
 
     public Motoristas(Integer id) {
         this.id = id;
+        this.status = "offline";  // Define o status padrão como offline
     }
 
     public Motoristas(Integer id, String nome, String telefone, String email, String senha, String marcaCarro, String modeloCarro, String matricula, String disponibilidade) {
@@ -122,8 +134,11 @@ public class Motoristas implements Serializable {
         this.modeloCarro = modeloCarro;
         this.matricula = matricula;
         this.disponibilidade = disponibilidade;
+        this.status = "offline";  // Define o status padrão como offline
+        
     }
 
+    // Getters e Setters
     public Integer getId() {
         return id;
     }
@@ -131,6 +146,7 @@ public class Motoristas implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
+
 
     public String getMarcaCarro() {
         return marcaCarro;
@@ -148,36 +164,22 @@ public class Motoristas implements Serializable {
         this.modeloCarro = modeloCarro;
     }
 
-    public byte[] getFoto1() {
-        return foto1;
+
+    public String getStatus() {
+        return status;
     }
 
-    public void setFoto1(byte[] foto1) {
-        this.foto1 = foto1;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public byte[] getFoto2() {
-        return foto2;
+    @XmlTransient
+    public List<Corridas> getCorridasList() {
+        return corridasList;
     }
 
-    public void setFoto2(byte[] foto2) {
-        this.foto2 = foto2;
-    }
-
-    public byte[] getFoto3() {
-        return foto3;
-    }
-
-    public void setFoto3(byte[] foto3) {
-        this.foto3 = foto3;
-    }
-
-    public byte[] getFoto4() {
-        return foto4;
-    }
-
-    public void setFoto4(byte[] foto4) {
-        this.foto4 = foto4;
+    public void setCorridasList(List<Corridas> corridasList) {
+        this.corridasList = corridasList;
     }
 
     @Override
@@ -189,15 +191,11 @@ public class Motoristas implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Motoristas)) {
             return false;
         }
         Motoristas other = (Motoristas) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return (this.id != null || other.id == null) && (this.id == null || this.id.equals(other.id));
     }
 
     @Override
@@ -236,6 +234,23 @@ public class Motoristas implements Serializable {
     public void setSenha(String senha) {
         this.senha = senha;
     }
+/*
+    public String getMarcaCarro() {
+        return marcaCarro;
+    }
+
+    public void setMarcaCarro(String marcaCarro) {
+        this.marcaCarro = marcaCarro;
+    }
+
+    public String getModeloCarro() {
+        return modeloCarro;
+    }
+
+    public void setModeloCarro(String modeloCarro) {
+        this.modeloCarro = modeloCarro;
+    }
+*/
 
     public String getMatricula() {
         return matricula;
@@ -253,13 +268,43 @@ public class Motoristas implements Serializable {
         this.disponibilidade = disponibilidade;
     }
 
-    @XmlTransient
-    public List<Corridas> getCorridasList() {
-        return corridasList;
+    public byte[] getFoto1() {
+        return foto1;
     }
 
-    public void setCorridasList(List<Corridas> corridasList) {
-        this.corridasList = corridasList;
+    public void setFoto1(byte[] foto1) {
+        this.foto1 = foto1;
     }
-    
+
+    public byte[] getFoto2() {
+        return foto2;
+    }
+
+    public void setFoto2(byte[] foto2) {
+        this.foto2 = foto2;
+    }
+
+    public byte[] getFoto3() {
+        return foto3;
+    }
+
+    public void setFoto3(byte[] foto3) {
+        this.foto3 = foto3;
+    }
+
+    public byte[] getFoto4() {
+        return foto4;
+    }
+
+    public void setFoto4(byte[] foto4) {
+        this.foto4 = foto4;
+    }
+
+    public Boolean getBloqueado() {
+        return bloqueado;
+    }
+
+    public void setBloqueado(Boolean bloqueado) {
+        this.bloqueado = bloqueado;
+    }
 }

@@ -122,20 +122,30 @@ public class LoginServlet extends HttpServlet {
                     session.setAttribute("usuario", usuario);
                     response.sendRedirect("utilizador.jsp");
                 } else if (motorista != null) {
-                    session.setAttribute("motorista", motorista);
-                    session.setAttribute("status", "online");
-                    // Notificar WebSocket
-                    AdminEndpoint.notificarAdministrador("Motorista " + motorista.getNome() + " está online.");
-                    response.sendRedirect("motorista.jsp");
+                    if (motorista.getBloqueado() != null && motorista.getBloqueado()) {
+                        response.sendRedirect("index.jsp?error=Motorista bloqueado. Entre em contato com o suporte.");
+                    } else {
+                        // Atualizar status para online
+                        em.getTransaction().begin();
+                        motorista.setStatus("online");
+                        em.getTransaction().commit();
+
+                        session.setAttribute("motorista", motorista);
+                        session.setAttribute("status", "online");
+
+                        // Notificar WebSocket
+                        AdminEndpoint.notificarAdministrador("Motorista " + motorista.getNome() + " está online.");
+                        response.sendRedirect("motorista.jsp");
+                    }
                 } else {
-                    response.sendRedirect("index.jsp");
+                    response.sendRedirect("index.jsp?error=Credenciais inválidas. Tente novamente.#loginModal");
                 }
 
             } finally {
                 em.close();
             }
         } else {
-            response.sendRedirect("index.jsp");
+            response.sendRedirect("index.jsp?error=Campos de telefone ou senha não podem estar vazios.#loginModal");
         }
     }
 

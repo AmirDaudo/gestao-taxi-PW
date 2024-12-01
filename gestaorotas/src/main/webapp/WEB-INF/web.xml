@@ -84,6 +84,10 @@
         <servlet-name>TaxiRequestServlet</servlet-name>
         <servlet-class>com.gestaorotas.servlet.TaxiRequestServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>MotoristasServlet</servlet-name>
+        <servlet-class>com.gestaorotas.servlet.MotoristasServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CadastroUser</servlet-name>
         <url-pattern>/CadastroUser</url-pattern>
@@ -167,6 +171,10 @@
     <servlet-mapping>
         <servlet-name>TaxiRequestServlet</servlet-name>
         <url-pattern>/TaxiRequestServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MotoristasServlet</servlet-name>
+        <url-pattern>/MotoristasServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

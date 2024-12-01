@@ -57,6 +57,17 @@
         <div class="container">
             <h1 class="display-4">Táxi 24 Horas, Segurança e Conforto</h1>
             <p class="lead">Peça um táxi a qualquer hora, em qualquer lugar.</p>
+            <!-- Exibir mensagens de erro -->
+        <%
+            String error = request.getParameter("error");
+            if (error != null) {
+        %>
+            <div class="alert alert-danger">
+                <%= error %>
+            </div>
+        <%
+            }
+        %>
             <a href="#" class="btn btn-warning btn-lg" data-bs-toggle="modal" data-bs-target="#loginModal"><i class="fas fa-taxi"></i> Fazer Login</a>
         </div>
     </section>
