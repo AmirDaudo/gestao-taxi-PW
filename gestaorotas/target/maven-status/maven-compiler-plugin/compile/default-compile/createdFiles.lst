@@ -26,9 +26,11 @@ com\gestaorotas\UsuariosJpaController1.class
 com\gestaorotas\exceptions\IllegalOrphanException.class
 com\gestaorotas\servlet\MostrarFotoServlet.class
 com\gestaorotas\model\exceptions\PreexistingEntityException.class
+com\gestaorotas\servlet\AceitarCorridaServlet.class
 com\gestaorotas\MotoristasJpaController1.class
 com\gestaorotas\servlet\LogoutServlet.class
 com\gestaorotas\servlet\RedefinirSenhaServlet.class
+com\gestaorotas\servlet\SolicitarTaxiServlet.class
 com\gestaorotas\servlet\MotoristasLogadosServlet.class
 com\gestaorotas\CadastroDriver.class
 com\gestaorotas\exceptions\NonexistentEntityException.class
@@ -44,5 +46,5 @@ com\gestaorotas\servlet\DeleteAccountServlet.class
 com\gestaorotas\UsuariosJpaController.class
 com\gestaorotas\JpaUtil.class
 com\gestaorotas\model\exceptions\IllegalOrphanException.class
-com\gestaorotas\CorridasServelet.class
 com\gestaorotas\websocket\ChatEndpoint.class
+com\gestaorotas\servlet\MotoristasServlet.class

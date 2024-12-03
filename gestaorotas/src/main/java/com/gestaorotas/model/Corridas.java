@@ -41,6 +41,41 @@ import java.util.Date;
     @NamedQuery(name = "Corridas.findByStatus", query = "SELECT c FROM Corridas c WHERE c.status = :status")})
 public class Corridas implements Serializable {
 
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "cliente_nome")
+    private String clienteNome;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "pickup")
+    private String pickup;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "destino")
+    private String destino;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "distancia")
+    private double distancia;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "valor_estimado")
+    private double valorEstimado;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 50)
+    @Column(name = "status")
+    private String status;
+    @Column(name = "data_hora_solicitacao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataHoraSolicitacao;
+    @JoinColumn(name = "motorista_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Motoristas motoristaId;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,21 +92,11 @@ public class Corridas implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "ponto_partida")
     private String pontoPartida;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "destino")
-    private String destino;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Column(name = "preco")
     private BigDecimal preco;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 12)
-    @Column(name = "status")
-    private String status;
     @JoinColumn(name = "id_motorista", referencedColumnName = "id")
     @ManyToOne
     private Motoristas idMotorista;
@@ -119,13 +144,6 @@ public class Corridas implements Serializable {
         this.pontoPartida = pontoPartida;
     }
 
-    public String getDestino() {
-        return destino;
-    }
-
-    public void setDestino(String destino) {
-        this.destino = destino;
-    }
 
     public BigDecimal getPreco() {
         return preco;
@@ -135,13 +153,6 @@ public class Corridas implements Serializable {
         this.preco = preco;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     public Motoristas getIdMotorista() {
         return idMotorista;
@@ -182,6 +193,70 @@ public class Corridas implements Serializable {
     @Override
     public String toString() {
         return "com.gestaorotas.model.Corridas[ id=" + id + " ]";
+    }
+
+    public String getClienteNome() {
+        return clienteNome;
+    }
+
+    public void setClienteNome(String clienteNome) {
+        this.clienteNome = clienteNome;
+    }
+
+    public String getPickup() {
+        return pickup;
+    }
+
+    public void setPickup(String pickup) {
+        this.pickup = pickup;
+    }
+
+    public String getDestino() {
+        return destino;
+    }
+
+    public void setDestino(String destino) {
+        this.destino = destino;
+    }
+
+    public double getDistancia() {
+        return distancia;
+    }
+
+    public void setDistancia(double distancia) {
+        this.distancia = distancia;
+    }
+
+    public double getValorEstimado() {
+        return valorEstimado;
+    }
+
+    public void setValorEstimado(double valorEstimado) {
+        this.valorEstimado = valorEstimado;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Date getDataHoraSolicitacao() {
+        return dataHoraSolicitacao;
+    }
+
+    public void setDataHoraSolicitacao(Date dataHoraSolicitacao) {
+        this.dataHoraSolicitacao = dataHoraSolicitacao;
+    }
+
+    public Motoristas getMotoristaId() {
+        return motoristaId;
+    }
+
+    public void setMotoristaId(Motoristas motoristaId) {
+        this.motoristaId = motoristaId;
     }
     
 }

@@ -112,26 +112,49 @@
     </div>
 </div>
 
-  <!-- Container principal -->
-<div class="container mt-3">
-    <h1 class="text-center">Solicitação de Táxi</h1>
-    
-    <!-- Mapa da localização -->
-    <div id="map"></div>
-    
-    <!-- Formulário de Solicitação de Táxi -->
-    <form id="taxi-form" class="mt-4">
-        <div class="mb-3">
-            <label for="pickup" class="form-label">Local de Partida</label>
-            <input type="text" class="form-control" id="pickup" readonly>
-        </div>
-        <div class="mb-3">
-            <label for="destination" class="form-label">Destino</label>
-            <input type="text" class="form-control" id="destination" placeholder="Digite o destino">
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Solicitar Táxi</button>
-    </form>
-    
+          <div class="container mt-3">
+        <h1 class="text-center">Solicitação de Táxi</h1>
+        
+        <!-- Mapa da localização -->
+        <div id="map" style="height: 400px;"></div>
+        
+        <!-- Exibir mensagens de sucesso ou erro -->
+        <%
+            String message = (String) request.getAttribute("message");
+            String status = (String) request.getAttribute("status");
+            if (message != null && status != null) {
+        %>
+            <div class="alert <%= status.equals("success") ? "alert-success" : "alert-danger" %>">
+                <%= message %>
+            </div>
+        <%
+            }
+        %>
+
+        <!-- Formulário de Solicitação de Táxi -->
+        <form id="taxi-form" class="mt-4" action="SolicitarTaxiServlet" method="post">
+            <div class="mb-3">
+                <label for="pickup" class="form-label">Local de Partida</label>
+                <input type="text" class="form-control" id="pickup" name="pickup" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="destination" class="form-label">Destino</label>
+                <input type="text" class="form-control" id="destination" name="destination" placeholder="Digite o destino">
+            </div>
+            <div class="mb-3">
+                <label for="distance" class="form-label">Distância (km)</label>
+                <input type="text" class="form-control" id="distance" name="distance" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="fare" class="form-label">Valor Estimado (MZN)</label>
+                <input type="text" class="form-control" id="fare" name="fare" readonly>
+            </div>
+            <button type="button" class="btn btn-primary w-100" onclick="generateRandomValues()">Gerar Valores</button>
+            <button type="submit" class="btn btn-success w-100 mt-2">Solicitar Táxi</button>
+        </form>
+    </div>
+
+
     <!-- Seção de Histórico de Corridas -->
     <div class="container mt-5" id="historico-corridas">
         <div class="section-header">
@@ -141,36 +164,7 @@
             </ul>
         </div>
     </div>
-</div>
-
-<script>
-document.getElementById('taxi-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    const pickup = document.getElementById('pickup').value;
-    const destination = document.getElementById('destination').value;
-    
-    fetch('TaxiRequestServlet', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `pickup=${pickup}&destination=${destination}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) {
-            alert(data.message);
-        } else if (data.error) {
-            alert(data.error);
-        }
-    })
-    .catch(error => console.error('Error:', error));
-});
-</script>
-
-
-
+</div> 
     <!-- Outras Funcionalidades: Cancelar Corrida, Denunciar, etc. -->
     <div class="container mt-5">
         <!-- Seção de Cancelar Corrida -->
@@ -332,6 +326,72 @@ document.getElementById('confirmLogoutButton').addEventListener('click', functio
         }
     };
 </script>
+
+
+             <script>
+        var map, pickupMarker;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: -12.9747, lng: 40.5178}, // Coordenadas iniciais para Pemba
+                zoom: 15
+            });
+
+            var pickupInput = document.getElementById('pickup');
+            var destinationInput = document.getElementById('destination');
+            var distanceInput = document.getElementById('distance');
+            var fareInput = document.getElementById('fare');
+
+            var destinationAutocomplete = new google.maps.places.Autocomplete(destinationInput);
+            destinationAutocomplete.bindTo('bounds', map);
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    var pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    map.setCenter(pos);
+
+                    pickupMarker = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        title: 'Você está aqui!'
+                    });
+
+                    pickupInput.value = pos.lat + "," + pos.lng;
+                }, function () {
+                    handleLocationError(true, map.getCenter());
+                });
+            } else {
+                handleLocationError(false, map.getCenter());
+            }
+        }
+
+        function generateRandomValues() {
+            var distance = (Math.random() * 10 + 1).toFixed(2); // Distância entre 1 e 10 km
+            var fare = (distance * 50).toFixed(2); // Exemplo: MZN 50 por km
+
+            document.getElementById('distance').value = distance;
+            document.getElementById('fare').value = fare;
+        }
+
+        function handleLocationError(browserHasGeolocation, pos) {
+            var infoWindow = new google.maps.InfoWindow({
+                map: map,
+                position: pos,
+                content: browserHasGeolocation ?
+                    'Erro: Falha ao buscar a localização.' :
+                    'Erro: Seu navegador não suporta geolocalização.'
+            });
+            infoWindow.open(map);
+        }
+
+        $(document).ready(function() {
+            initMap();
+        });
+    </script>
+
 
     </body>
 </html>

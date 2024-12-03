@@ -49,6 +49,7 @@ public class Motoristas implements Serializable {
 
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -202,6 +203,12 @@ public class Motoristas implements Serializable {
     public String toString() {
         return "com.gestaorotas.model.Motoristas[ id=" + id + " ]";
     }
+    public Boolean getBloqueado() {
+        return bloqueado;
+    }
+    public void setBloqueado(Boolean bloqueado) {
+        this.bloqueado = bloqueado;
+    }
 
     public String getNome() {
         return nome;
@@ -226,14 +233,6 @@ public class Motoristas implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
 /*
     public String getMarcaCarro() {
         return marcaCarro;
@@ -251,6 +250,14 @@ public class Motoristas implements Serializable {
         this.modeloCarro = modeloCarro;
     }
 */
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
 
     public String getMatricula() {
         return matricula;
@@ -298,13 +305,5 @@ public class Motoristas implements Serializable {
 
     public void setFoto4(byte[] foto4) {
         this.foto4 = foto4;
-    }
-
-    public Boolean getBloqueado() {
-        return bloqueado;
-    }
-
-    public void setBloqueado(Boolean bloqueado) {
-        this.bloqueado = bloqueado;
     }
 }

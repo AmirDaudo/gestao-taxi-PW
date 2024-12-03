@@ -1,12 +1,14 @@
-<%-- 
+  <%-- 
     Document   : motorista
     Created on : 09/11/2024, 10:18:30
     Author     : asus
 --%>
+<%@page import="com.gestaorotas.model.Corridas"%>
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="com.gestaorotas.model.Motoristas" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
     // Verificar se o usuário está logado
     Motoristas motorista = (Motoristas) session.getAttribute("motorista");
@@ -31,6 +33,18 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <!-- Estilo Personalizado -->
     <link rel="stylesheet" href="motorista.css">
+
+  <script>
+        function aceitarPedido(corridaId) {
+            document.getElementById('form-' + corridaId).action = 'MotoristasServlet?action=aceitar';
+            document.getElementById('form-' + corridaId).submit();
+        }
+
+        function rejeitarPedido(corridaId) {
+            document.getElementById('form-' + corridaId).action = 'MotoristasServlet?action=rejeitar';
+            document.getElementById('form-' + corridaId).submit();
+        }
+    </script>
    
 </head>
 <body>
@@ -125,24 +139,43 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Pedidos de Corrida -->
-                <div id="pedidos" class="tab-content mt-5">
-                    <h3 class="mb-4">Pedidos de Corrida</h3>
-                    <div class="list-group">
-                        <div class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <h5>Cliente: João Silva</h5>
-                                <p>Destino: Centro de Pemba</p>
-                                <p>Distância: 5 km | Valor Estimado: MZN 200,00</p>
-                            </div>
-                            <div>
-                                <button class="btn btn-success me-2" onclick="aceitarPedido()">Aceitar</button>
-                                <button class="btn btn-danger" onclick="rejeitarPedido()">Rejeitar</button>
-                            </div>
-                        </div>
+  <div class="container mt-3">
+        <h1 class="text-center">Pedidos de Corrida</h1>
+        
+        <%
+            List<Corridas> corridasPendentes = (List<Corridas>) request.getAttribute("corridasPendentes");
+            if (corridasPendentes != null && !corridasPendentes.isEmpty()) {
+        %>
+            <div class="list-group mt-5">
+                <%
+                    for (Corridas corrida : corridasPendentes) {
+                %>
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5>Cliente: <%= corrida.getClienteNome() %></h5>
+                        <p>Destino: <%= corrida.getDestino() %></p>
+                        <p>Distância: <%= corrida.getDistancia() %> km | Valor Estimado: MZN <%= corrida.getValorEstimado() %></p>
+                    </div>
+                    <div>
+                        <form id="form-<%= corrida.getId() %>" method="post">
+                            <input type="hidden" name="corridaId" value="<%= corrida.getId() %>">
+                            <button type="button" class="btn btn-success me-2" onclick="aceitarPedido(<%= corrida.getId() %>)">Aceitar</button>
+                            <button type="button" class="btn btn-danger" onclick="rejeitarPedido(<%= corrida.getId() %>)">Rejeitar</button>
+                        </form>
                     </div>
                 </div>
+                <%
+                    }
+                %>
+            </div>
+        <%
+            } else {
+        %>
+            <div class="alert alert-info">Nenhuma requisição de táxi pendente.</div>
+        <%
+            }
+        %>
+    </div>
 
               <!-- Chat com o Cliente -->
             <div id="chat" class="tab-content mt-5">
@@ -293,5 +326,17 @@
     };
 </script>
 
+  <script>
+        function aceitarPedido(corridaId) {
+            document.getElementById('form-' + corridaId).action = 'MotoristasServlet?action=aceitar';
+            document.getElementById('form-' + corridaId).submit();
+        }
+
+        function rejeitarPedido(corridaId) {
+            document.getElementById('form-' + corridaId).action = 'MotoristasServlet?action=rejeitar';
+            document.getElementById('form-' + corridaId).submit();
+        }
+    </script>
+    
 </body>
 </html>

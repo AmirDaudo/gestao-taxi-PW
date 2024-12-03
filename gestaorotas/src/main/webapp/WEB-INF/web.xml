@@ -13,10 +13,6 @@
         <servlet-class>com.gestaorotas.CadastroDriver</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>CorridasServelet</servlet-name>
-        <servlet-class>com.gestaorotas.CorridasServelet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>AlterarSenhaServlet</servlet-name>
         <servlet-class>com.gestaorotas.AlterarSenhaServlet</servlet-class>
     </servlet>
@@ -88,6 +84,14 @@
         <servlet-name>MotoristasServlet</servlet-name>
         <servlet-class>com.gestaorotas.servlet.MotoristasServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SolicitarTaxiServlet</servlet-name>
+        <servlet-class>com.gestaorotas.servlet.SolicitarTaxiServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AceitarCorridaServlet</servlet-name>
+        <servlet-class>com.gestaorotas.servlet.AceitarCorridaServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CadastroUser</servlet-name>
         <url-pattern>/CadastroUser</url-pattern>
@@ -99,10 +103,6 @@
     <servlet-mapping>
         <servlet-name>CadastroDriver</servlet-name>
         <url-pattern>/CadastroDriver</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CorridasServelet</servlet-name>
-        <url-pattern>/CorridasServelet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AlterarSenhaServlet</servlet-name>
@@ -175,6 +175,14 @@
     <servlet-mapping>
         <servlet-name>MotoristasServlet</servlet-name>
         <url-pattern>/MotoristasServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SolicitarTaxiServlet</servlet-name>
+        <url-pattern>/SolicitarTaxiServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AceitarCorridaServlet</servlet-name>
+        <url-pattern>/AceitarCorridaServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

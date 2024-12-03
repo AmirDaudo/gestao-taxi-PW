@@ -3,6 +3,7 @@ C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\s
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\endpoint\MotoristasEndpoint.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\MotoristasJpaController.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\model\Denuncias.java
+C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\servlet\SolicitarTaxiServlet.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\servlet\LogoutServlet.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\MotoristasJpaController1.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\CadastroDriver.java
@@ -11,7 +12,6 @@ C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\s
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\JakartaRestConfiguration.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\controladora\exceptions\NonexistentEntityException.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\model\exceptions\NonexistentEntityException.java
-C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\CorridasServelet.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\servlet\MotoristasServlet.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\controladora\exceptions\IllegalOrphanException.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\servlet\UpdateDriverProfileServlet.java
@@ -44,6 +44,7 @@ C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\w
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\model\exceptions\IllegalOrphanException.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\servlet\RecuperarSenhaServlet.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\UsuariosJpaController1.java
+C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\servlet\AceitarCorridaServlet.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\model\Motoristas.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\model\Corridas.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\servlet\SessionListener.java

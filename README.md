@@ -26,7 +26,7 @@ CREATE TABLE motoristas (
     foto3 LONGBLOB,
     foto4 LONGBLOB
     status VARCHAR(10) DEFAULT 'offline',
- bloqueado BOOLEAN DEFAULT FALSE
+    bloqueado BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE denuncias (
@@ -39,6 +39,21 @@ CREATE TABLE denuncias (
     CONSTRAINT fk_usuario FOREIGN KEY (usuario_id) REFERENCES Usuarios(id),
     CONSTRAINT fk_motorista FOREIGN KEY (motorista_id) REFERENCES Motoristas(id)
 );
+
+CREATE TABLE corridas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_nome VARCHAR(255) NOT NULL,
+    motorista_id INT NOT NULL,
+    pickup VARCHAR(255) NOT NULL,
+    destino VARCHAR(255) NOT NULL,
+    distancia DOUBLE NOT NULL,
+    valor_estimado DOUBLE NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    data_hora_solicitacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_motorista FOREIGN KEY (motorista_id) REFERENCES motoristas(id)
+);
+
+
 
 ALTER TABLE usuarios ADD reset_token VARCHAR(255);
 
