@@ -11,7 +11,6 @@ import jakarta.persistence.Query;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
-import com.gestaorotas.model.Motoristas;
 import com.gestaorotas.model.Usuarios;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -21,9 +20,9 @@ import java.util.List;
  *
  * @author asus
  */
-public class CorridasJpaController implements Serializable {
+public class CorridasJpaController1 implements Serializable {
 
-    public CorridasJpaController(EntityManagerFactory emf) {
+    public CorridasJpaController1(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -37,21 +36,12 @@ public class CorridasJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Motoristas idMotorista = corridas.getIdMotorista();
-            if (idMotorista != null) {
-                idMotorista = em.getReference(idMotorista.getClass(), idMotorista.getId());
-                corridas.setIdMotorista(idMotorista);
-            }
             Usuarios idCliente = corridas.getIdCliente();
             if (idCliente != null) {
                 idCliente = em.getReference(idCliente.getClass(), idCliente.getId());
                 corridas.setIdCliente(idCliente);
             }
             em.persist(corridas);
-            if (idMotorista != null) {
-                idMotorista.getCorridasList().add(corridas);
-                idMotorista = em.merge(idMotorista);
-            }
             if (idCliente != null) {
                 idCliente.getCorridasList().add(corridas);
                 idCliente = em.merge(idCliente);
@@ -70,27 +60,13 @@ public class CorridasJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Corridas persistentCorridas = em.find(Corridas.class, corridas.getId());
-            Motoristas idMotoristaOld = persistentCorridas.getIdMotorista();
-            Motoristas idMotoristaNew = corridas.getIdMotorista();
             Usuarios idClienteOld = persistentCorridas.getIdCliente();
             Usuarios idClienteNew = corridas.getIdCliente();
-            if (idMotoristaNew != null) {
-                idMotoristaNew = em.getReference(idMotoristaNew.getClass(), idMotoristaNew.getId());
-                corridas.setIdMotorista(idMotoristaNew);
-            }
             if (idClienteNew != null) {
                 idClienteNew = em.getReference(idClienteNew.getClass(), idClienteNew.getId());
                 corridas.setIdCliente(idClienteNew);
             }
             corridas = em.merge(corridas);
-            if (idMotoristaOld != null && !idMotoristaOld.equals(idMotoristaNew)) {
-                idMotoristaOld.getCorridasList().remove(corridas);
-                idMotoristaOld = em.merge(idMotoristaOld);
-            }
-            if (idMotoristaNew != null && !idMotoristaNew.equals(idMotoristaOld)) {
-                idMotoristaNew.getCorridasList().add(corridas);
-                idMotoristaNew = em.merge(idMotoristaNew);
-            }
             if (idClienteOld != null && !idClienteOld.equals(idClienteNew)) {
                 idClienteOld.getCorridasList().remove(corridas);
                 idClienteOld = em.merge(idClienteOld);
@@ -127,11 +103,6 @@ public class CorridasJpaController implements Serializable {
                 corridas.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The corridas with id " + id + " no longer exists.", enfe);
-            }
-            Motoristas idMotorista = corridas.getIdMotorista();
-            if (idMotorista != null) {
-                idMotorista.getCorridasList().remove(corridas);
-                idMotorista = em.merge(idMotorista);
             }
             Usuarios idCliente = corridas.getIdCliente();
             if (idCliente != null) {

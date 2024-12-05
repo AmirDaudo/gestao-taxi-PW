@@ -196,6 +196,7 @@
 </div>
 
    <!-- Modal de Cadastro -->
+ <!-- Modal de Cadastro -->
 <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -255,15 +256,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                    <!-- Exibição de mensagens de erro ou sucesso -->
-                    <c:if test="${not empty param.error}">
-                         <div style="color:red;">${param.error}</div>
-                      </c:if>
-                    <c:if test="${not empty param.success}">
-                          <div style="color:green;">${param.success}</div>
-                      </c:if>
+                <!-- Exibição de mensagens de erro ou sucesso -->
+                <c:if test="${not empty param.error}">
+                     <div style="color:red;">${param.error}</div>
+                </c:if>
+                <c:if test="${not empty param.success}">
+                      <div style="color:green;">${param.success}</div>
+                </c:if>
 
-                <form id="driverForm" action="CadastroDriver" method="post" enctype="multipart/form-data">
+                <form id="driverForm" action="CadastroDriver" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
                     <!-- Nome do Motorista -->
                     <div class="mb-3">
                         <label for="driverName" class="form-label">Nome do Motorista</label>
@@ -276,7 +277,6 @@
                             <span class="input-group-text">+258</span>
                             <input type="tel" class="form-control" id="driverPhone" placeholder="Número de telefone" name="telefone" required>
                         </div>
-                        <div class="error" id="driverPhoneError" style="display: none;">Por favor, insira apenas números.</div>
                     </div>
                     <!-- E-mail -->
                     <div class="mb-3">
@@ -292,15 +292,13 @@
                     <div class="mb-3">
                         <label for="confirmDriverPassword" class="form-label">Confirmar Senha</label>
                         <input type="password" class="form-control" id="confirmDriverPassword" placeholder="Confirmar Senha" name="confirmar_senha" required>
-                        <div class="error" id="driverPasswordMatchError" style="display: none;">As senhas não coincidem.</div>
                     </div>
-                   
+                    <!-- Fotos do Carro -->
                     <div class="mb-3">
                         <label for="carPhotos" class="form-label">Fotos do Carro (4 fotos)</label>
                         <input type="file" class="form-control" id="carPhotos" name="fotos_carro" accept="image/*" multiple required>
                         <small class="form-text text-muted">Carregue exatamente 4 fotos do carro.</small>
                     </div>
-
                     <!-- Marca do Carro -->
                     <div class="mb-3">
                         <label for="carBrand" class="form-label">Marca do Carro</label>
@@ -316,7 +314,7 @@
                         <label for="carPlate" class="form-label">Matrícula</label>
                         <input type="text" class="form-control" id="carPlate" placeholder="Ex: ABC-1234" name="matricula" required>
                     </div>
-                    <!-- Disponibilidade (Select Dropdown) -->
+                    <!-- Disponibilidade -->
                     <div class="mb-3">
                         <label for="driverAvailability" class="form-label">Disponibilidade</label>
                         <select class="form-select" id="driverAvailability" name="disponibilidade" required>
@@ -339,6 +337,7 @@
         </div>
     </div>
 </div>
+
       
 <!-- Modal de Termos e Condições -->
 <div class="modal fade" id="termosModal" tabindex="-1" aria-labelledby="termosModalLabel" aria-hidden="true">

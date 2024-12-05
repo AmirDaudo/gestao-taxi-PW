@@ -21,16 +21,16 @@
 <body>
     
     <%
-            String message = (String) request.getAttribute("message");
-            String status = (String) request.getAttribute("status");
-            if (message != null && status != null) {
-        %>
-            <div class="alert <%= status.equals("success") ? "alert-success" : "alert-danger" %>">
-                <%= message %>
-            </div>
-        <%
-            }
-        %>
+        String message = (String) request.getAttribute("message");
+        String status = (String) request.getAttribute("status");
+        if (message != null && status != null) {
+    %>
+        <div class="alert <%= status.equals("success") ? "alert-success" : "alert-danger" %>">
+            <%= message %>
+        </div>
+    <%
+        }
+    %>
 
 
     <div class="container my-5">
@@ -64,26 +64,22 @@
                     <div class="row">
                         <% if (motorista.getFoto1() != null) { %>
                             <div class="col-md-3 mb-3">
-                                <img src="data:image/jpeg;base64,<%= Base64.getEncoder().encodeToString(motorista.getFoto1()) %>" 
-                                     class="img-thumbnail" alt="Foto 1" data-bs-toggle="modal" data-bs-target="#fotoModal1">
+                                <img src="<%= request.getContextPath() + "/" + motorista.getFoto1() %>" class="img-thumbnail" alt="Foto 1" data-bs-toggle="modal" data-bs-target="#fotoModal1">
                             </div>
                         <% } %>
                         <% if (motorista.getFoto2() != null) { %>
                             <div class="col-md-3 mb-3">
-                                <img src="data:image/jpeg;base64,<%= Base64.getEncoder().encodeToString(motorista.getFoto2()) %>" 
-                                     class="img-thumbnail" alt="Foto 2" data-bs-toggle="modal" data-bs-target="#fotoModal2">
+                                <img src="<%= request.getContextPath() + "/" + motorista.getFoto2() %>" class="img-thumbnail" alt="Foto 2" data-bs-toggle="modal" data-bs-target="#fotoModal2">
                             </div>
                         <% } %>
                         <% if (motorista.getFoto3() != null) { %>
                             <div class="col-md-3 mb-3">
-                                <img src="data:image/jpeg;base64,<%= Base64.getEncoder().encodeToString(motorista.getFoto3()) %>" 
-                                     class="img-thumbnail" alt="Foto 3" data-bs-toggle="modal" data-bs-target="#fotoModal3">
+                                <img src="<%= request.getContextPath() + "/" + motorista.getFoto3() %>" class="img-thumbnail" alt="Foto 3" data-bs-toggle="modal" data-bs-target="#fotoModal3">
                             </div>
                         <% } %>
                         <% if (motorista.getFoto4() != null) { %>
                             <div class="col-md-3 mb-3">
-                                <img src="data:image/jpeg;base64,<%= Base64.getEncoder().encodeToString(motorista.getFoto4()) %>" 
-                                     class="img-thumbnail" alt="Foto 4" data-bs-toggle="modal" data-bs-target="#fotoModal4">
+                                <img src="<%= request.getContextPath() + "/" + motorista.getFoto4() %>" class="img-thumbnail" alt="Foto 4" data-bs-toggle="modal" data-bs-target="#fotoModal4">
                             </div>
                         <% } %>
                     </div>
@@ -108,7 +104,7 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-body">
-                                <img src="data:image/jpeg;base64,<%= Base64.getEncoder().encodeToString(motorista.getFoto1()) %>" class="img-fluid" alt="Foto 1">
+                                <img src="<%= request.getContextPath() + "/" + motorista.getFoto1() %>" class="img-fluid" alt="Foto 1">
                             </div>
                         </div>
                     </div>
@@ -119,7 +115,7 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-body">
-                                <img src="data:image/jpeg;base64,<%= Base64.getEncoder().encodeToString(motorista.getFoto2()) %>" class="img-fluid" alt="Foto 2">
+                                <img src="<%= request.getContextPath() + "/" + motorista.getFoto2() %>" class="img-fluid" alt="Foto 2">
                             </div>
                         </div>
                     </div>
@@ -130,7 +126,7 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-body">
-                                <img src="data:image/jpeg;base64,<%= Base64.getEncoder().encodeToString(motorista.getFoto3()) %>" class="img-fluid" alt="Foto 3">
+                                <img src="<%= request.getContextPath() + "/" + motorista.getFoto3() %>" class="img-fluid" alt="Foto 3">
                             </div>
                         </div>
                     </div>
@@ -141,7 +137,7 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-body">
-                                <img src="data:image/jpeg;base64,<%= Base64.getEncoder().encodeToString(motorista.getFoto4()) %>" class="img-fluid" alt="Foto 4">
+                                <img src="<%= request.getContextPath() + "/" + motorista.getFoto4() %>" class="img-fluid" alt="Foto 4">
                             </div>
                         </div>
                     </div>

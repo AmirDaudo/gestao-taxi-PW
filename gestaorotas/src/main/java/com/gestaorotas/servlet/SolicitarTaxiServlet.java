@@ -29,15 +29,19 @@ public class SolicitarTaxiServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        String clienteNome = (String) session.getAttribute("usuarioLogadoNome"); // Obtenha o nome do cliente da sessão
-        Usuarios cliente = (Usuarios) session.getAttribute("usuarioLogado"); // Obtenha o objeto Usuário logado da sessão
-
-        // Verificação para garantir que clienteNome não seja nulo ou vazio
-        if (clienteNome == null || clienteNome.trim().isEmpty()) {
-            clienteNome = "Cliente Anônimo"; // Define um nome padrão se não estiver disponível
+        HttpSession session = request.getSession(false); // Obter sessão existente, não criar nova
+        if (session == null) {
+            response.sendRedirect("index.jsp"); // Redirecionar para a página de login se a sessão não existir
+            return;
+        }
+        
+        Usuarios cliente = (Usuarios) session.getAttribute("usuario"); // Obter o objeto Usuário logado da sessão
+        if (cliente == null) {
+            response.sendRedirect("index.jsp"); // Redirecionar para a página de login se o usuário não estiver autenticado
+            return;
         }
 
+        String clienteNome = cliente.getNome(); // Obter o nome do cliente a partir do objeto usuário logado
         String pickup = request.getParameter("pickup");
         String destination = request.getParameter("destination");
         String distanceStr = request.getParameter("distance");

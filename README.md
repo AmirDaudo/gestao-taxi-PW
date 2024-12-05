@@ -16,15 +16,15 @@ CREATE TABLE motoristas (
     nome VARCHAR(50) NOT NULL,
     telefone VARCHAR(20) NOT NULL,
     email VARCHAR(50) NOT NULL,
-    senha VARCHAR(50) NOT NULL,
+    senha VARCHAR(64) NOT NULL,  -- SHA-256 hash tem 64 caracteres
     marca_carro VARCHAR(50) NOT NULL,
     modelo_carro VARCHAR(50) NOT NULL,
     matricula VARCHAR(20) NOT NULL,
     disponibilidade VARCHAR(10) NOT NULL,
-    foto1 LONGBLOB,
-    foto2 LONGBLOB,
-    foto3 LONGBLOB,
-    foto4 LONGBLOB
+    foto1 VARCHAR(255),  -- Caminho da foto 1
+    foto2 VARCHAR(255),  -- Caminho da foto 2
+    foto3 VARCHAR(255),  -- Caminho da foto 3
+    foto4 VARCHAR(255),  -- Caminho da foto 4
     status VARCHAR(10) DEFAULT 'offline',
     bloqueado BOOLEAN DEFAULT FALSE
 );

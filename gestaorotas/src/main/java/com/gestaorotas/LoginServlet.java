@@ -62,6 +62,7 @@ public class LoginServlet extends HttpServlet {
 
                 // Criptografar a senha fornecida para a comparação
                 String senhaCriptografada = criptografarSenha(senha);
+                logger.log(Level.INFO, "Senha Criptografada: " + senhaCriptografada);
 
                 // Tentar verificar com a senha criptografada
                 TypedQuery<Usuarios> queryUser = em.createQuery("SELECT u FROM Usuarios u WHERE u.telefone = :telefone AND u.senha = :senha", Usuarios.class);
@@ -70,8 +71,9 @@ public class LoginServlet extends HttpServlet {
 
                 try {
                     usuario = queryUser.getSingleResult();
+                    logger.log(Level.INFO, "Usuário encontrado: " + usuario.getNome());
                 } catch (Exception e) {
-                    logger.log(Level.INFO, "Não encontrado na tabela de Usuários com a senha criptografada", e);
+                    logger.log(Level.INFO, "Usuário não encontrado com a senha criptografada", e);
                 }
 
                 if (usuario == null) {
@@ -81,12 +83,13 @@ public class LoginServlet extends HttpServlet {
                     queryUser.setParameter("senha", senha);
                     try {
                         usuario = queryUser.getSingleResult();
+                        logger.log(Level.INFO, "Usuário encontrado com senha não criptografada: " + usuario.getNome());
                         // Atualizar a senha para a versão criptografada
                         em.getTransaction().begin();
                         usuario.setSenha(senhaCriptografada);
                         em.getTransaction().commit();
                     } catch (Exception e) {
-                        logger.log(Level.INFO, "Não encontrado na tabela de Usuários com a senha em texto simples", e);
+                        logger.log(Level.INFO, "Usuário não encontrado com a senha não criptografada", e);
                     }
                 }
 
@@ -97,8 +100,9 @@ public class LoginServlet extends HttpServlet {
                     queryDriver.setParameter("senha", senhaCriptografada);
                     try {
                         motorista = queryDriver.getSingleResult();
+                        logger.log(Level.INFO, "Motorista encontrado: " + motorista.getNome());
                     } catch (Exception e) {
-                        logger.log(Level.INFO, "Não encontrado na tabela de Motoristas com a senha criptografada", e);
+                        logger.log(Level.INFO, "Motorista não encontrado com a senha criptografada", e);
                     }
 
                     if (motorista == null) {
@@ -108,12 +112,13 @@ public class LoginServlet extends HttpServlet {
                         queryDriver.setParameter("senha", senha);
                         try {
                             motorista = queryDriver.getSingleResult();
+                            logger.log(Level.INFO, "Motorista encontrado com senha não criptografada: " + motorista.getNome());
                             // Atualizar a senha para a versão criptografada
                             em.getTransaction().begin();
                             motorista.setSenha(senhaCriptografada);
                             em.getTransaction().commit();
                         } catch (Exception e) {
-                            logger.log(Level.INFO, "Não encontrado na tabela de Motoristas com a senha em texto simples", e);
+                            logger.log(Level.INFO, "Motorista não encontrado com a senha não criptografada", e);
                         }
                     }
                 }

@@ -9,10 +9,6 @@
         <servlet-class>com.gestaorotas.LoginServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>CadastroDriver</servlet-name>
-        <servlet-class>com.gestaorotas.CadastroDriver</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>AlterarSenhaServlet</servlet-name>
         <servlet-class>com.gestaorotas.AlterarSenhaServlet</servlet-class>
     </servlet>
@@ -53,10 +49,6 @@
         <servlet-class>com.gestaorotas.servlet.AdminDenunciasServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>MostrarFotoServlet</servlet-name>
-        <servlet-class>com.gestaorotas.servlet.MostrarFotoServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>MotoristasCadastradosServlet</servlet-name>
         <servlet-class>com.gestaorotas.servlet.MotoristasCadastradosServlet</servlet-class>
     </servlet>
@@ -92,6 +84,10 @@
         <servlet-name>AceitarCorridaServlet</servlet-name>
         <servlet-class>com.gestaorotas.servlet.AceitarCorridaServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CadastroDriver</servlet-name>
+        <servlet-class>com.gestaorotas.servlet.CadastroDriver</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CadastroUser</servlet-name>
         <url-pattern>/CadastroUser</url-pattern>
@@ -99,10 +95,6 @@
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CadastroDriver</servlet-name>
-        <url-pattern>/CadastroDriver</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AlterarSenhaServlet</servlet-name>
@@ -145,10 +137,6 @@
         <url-pattern>/AdminDenunciasServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>MostrarFotoServlet</servlet-name>
-        <url-pattern>/MostrarFotoServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>MotoristasCadastradosServlet</servlet-name>
         <url-pattern>/MotoristasCadastradosServlet</url-pattern>
     </servlet-mapping>
@@ -183,6 +171,10 @@
     <servlet-mapping>
         <servlet-name>AceitarCorridaServlet</servlet-name>
         <url-pattern>/AceitarCorridaServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CadastroDriver</servlet-name>
+        <url-pattern>/CadastroDriver</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

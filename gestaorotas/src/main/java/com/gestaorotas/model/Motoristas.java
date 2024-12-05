@@ -1,6 +1,11 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.gestaorotas.model;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,8 +23,13 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ *
+ * @author asus
+ */
 @Entity
 @Table(name = "motoristas")
+@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Motoristas.findAll", query = "SELECT m FROM Motoristas m"),
     @NamedQuery(name = "Motoristas.findById", query = "SELECT m FROM Motoristas m WHERE m.id = :id"),
@@ -31,101 +41,86 @@ import java.util.List;
     @NamedQuery(name = "Motoristas.findByModeloCarro", query = "SELECT m FROM Motoristas m WHERE m.modeloCarro = :modeloCarro"),
     @NamedQuery(name = "Motoristas.findByMatricula", query = "SELECT m FROM Motoristas m WHERE m.matricula = :matricula"),
     @NamedQuery(name = "Motoristas.findByDisponibilidade", query = "SELECT m FROM Motoristas m WHERE m.disponibilidade = :disponibilidade"),
-    @NamedQuery(name = "Motoristas.findByStatus", query = "SELECT m FROM Motoristas m WHERE m.status = :status")
-})
+    @NamedQuery(name = "Motoristas.findByStatus", query = "SELECT m FROM Motoristas m WHERE m.status = :status"),
+    @NamedQuery(name = "Motoristas.findByBloqueado", query = "SELECT m FROM Motoristas m WHERE m.bloqueado = :bloqueado")})
 public class Motoristas implements Serializable {
 
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Size(min = 1, max = 50)
     @Column(name = "nome")
     private String nome;
-
     @Basic(optional = false)
     @NotNull()
-    @Size(min = 1, max = 255)
+    @Size(min = 1, max = 20)
     @Column(name = "telefone")
     private String telefone;
-
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Size(min = 1, max = 50)
     @Column(name = "email")
     private String email;
-
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Size(min = 1, max = 64)
     @Column(name = "senha")
     private String senha;
-
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Size(min = 1, max = 50)
     @Column(name = "marca_carro")
     private String marcaCarro;
-
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Size(min = 1, max = 50)
     @Column(name = "modelo_carro")
     private String modeloCarro;
-
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Size(min = 1, max = 20)
     @Column(name = "matricula")
     private String matricula;
-
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Size(min = 1, max = 10)
     @Column(name = "disponibilidade")
     private String disponibilidade;
-
-    @Lob()
+    @Size(max = 255)
     @Column(name = "foto1")
-    private byte[] foto1;
-
-    @Lob()
+    private String foto1;
+    @Size(max = 255)
     @Column(name = "foto2")
-    private byte[] foto2;
-
-    @Lob()
+    private String foto2;
+    @Size(max = 255)
     @Column(name = "foto3")
-    private byte[] foto3;
-
-    @Lob()
+    private String foto3;
+    @Size(max = 255)
     @Column(name = "foto4")
-    private byte[] foto4;
-    @Column(name = "bloqueado")
-    private Boolean bloqueado;
+    private String foto4;
+    @Size(max = 10)
+    @Column(name = "status")
+    private String status;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "motoristaId")
+    private List<Corridas> corridasList;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-
-    @Basic(optional = true)
-    @Column(name = "status", nullable = false, columnDefinition = "VARCHAR(10) DEFAULT 'offline'")
-    private String status;
-
-    @OneToMany(mappedBy = "idMotorista")
-    private List<Corridas> corridasList;
+    @Column(name = "bloqueado")
+    private Boolean bloqueado;
 
     public Motoristas() {
-        this.status = "offline";  // Define o status padrão como offline
     }
 
     public Motoristas(Integer id) {
         this.id = id;
-        this.status = "offline";  // Define o status padrão como offline
     }
 
-    public Motoristas(Integer id, String nome, String telefone, String email, String senha, String marcaCarro, String modeloCarro, String matricula, String disponibilidade) {
+    public Motoristas(Integer id, String nome, String telefone, String email, String senha, String marcaCarro, String modeloCarro, String matricula, String disponibilidade, String status) {
         this.id = id;
         this.nome = nome;
         this.telefone = telefone;
@@ -135,11 +130,9 @@ public class Motoristas implements Serializable {
         this.modeloCarro = modeloCarro;
         this.matricula = matricula;
         this.disponibilidade = disponibilidade;
-        this.status = "offline";  // Define o status padrão como offline
-        
+        this.status = status;
     }
 
-    // Getters e Setters
     public Integer getId() {
         return id;
     }
@@ -166,21 +159,12 @@ public class Motoristas implements Serializable {
     }
 
 
-    public String getStatus() {
-        return status;
+    public Boolean getBloqueado() {
+        return bloqueado;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    @XmlTransient
-    public List<Corridas> getCorridasList() {
-        return corridasList;
-    }
-
-    public void setCorridasList(List<Corridas> corridasList) {
-        this.corridasList = corridasList;
+    public void setBloqueado(Boolean bloqueado) {
+        this.bloqueado = bloqueado;
     }
 
     @Override
@@ -192,22 +176,24 @@ public class Motoristas implements Serializable {
 
     @Override
     public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Motoristas)) {
             return false;
         }
         Motoristas other = (Motoristas) object;
-        return (this.id != null || other.id == null) && (this.id == null || this.id.equals(other.id));
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public String toString() {
         return "com.gestaorotas.model.Motoristas[ id=" + id + " ]";
     }
-    public Boolean getBloqueado() {
-        return bloqueado;
-    }
-    public void setBloqueado(Boolean bloqueado) {
-        this.bloqueado = bloqueado;
+
+    public Object getCorridasList() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     public String getNome() {
@@ -233,6 +219,14 @@ public class Motoristas implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
 /*
     public String getMarcaCarro() {
         return marcaCarro;
@@ -250,15 +244,6 @@ public class Motoristas implements Serializable {
         this.modeloCarro = modeloCarro;
     }
 */
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
     public String getMatricula() {
         return matricula;
     }
@@ -275,35 +260,53 @@ public class Motoristas implements Serializable {
         this.disponibilidade = disponibilidade;
     }
 
-    public byte[] getFoto1() {
+    public String getFoto1() {
         return foto1;
     }
 
-    public void setFoto1(byte[] foto1) {
+    public void setFoto1(String foto1) {
         this.foto1 = foto1;
     }
 
-    public byte[] getFoto2() {
+    public String getFoto2() {
         return foto2;
     }
 
-    public void setFoto2(byte[] foto2) {
+    public void setFoto2(String foto2) {
         this.foto2 = foto2;
     }
 
-    public byte[] getFoto3() {
+    public String getFoto3() {
         return foto3;
     }
 
-    public void setFoto3(byte[] foto3) {
+    public void setFoto3(String foto3) {
         this.foto3 = foto3;
     }
 
-    public byte[] getFoto4() {
+    public String getFoto4() {
         return foto4;
     }
 
-    public void setFoto4(byte[] foto4) {
+    public void setFoto4(String foto4) {
         this.foto4 = foto4;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+/*
+    @XmlTransient
+    public List<Corridas> getCorridasList() {
+        return corridasList;
+    }
+
+    public void setCorridasList(List<Corridas> corridasList) {
+        this.corridasList = corridasList;
+    }
+    */
 }

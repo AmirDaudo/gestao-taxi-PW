@@ -1,7 +1,7 @@
-package com.gestaorotas;
+package com.gestaorotas.servlet;
 
+import com.gestaorotas.MotoristasJpaController;
 import com.gestaorotas.model.Motoristas;
-import com.gestaorotas.model.MotoristasJpaController;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
@@ -9,13 +9,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -23,7 +24,6 @@ import jakarta.persistence.Persistence;
 @MultipartConfig
 public class CadastroDriver extends HttpServlet {
 
-    private static final Logger logger = Logger.getLogger(CadastroDriver.class.getName());
     private EntityManagerFactory emf;
 
     @Override
@@ -34,36 +34,54 @@ public class CadastroDriver extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Verificar se o checkbox dos termos foi marcado
-        String termos = request.getParameter("termos");
-        if (termos == null) {
-            response.sendRedirect("index.jsp?error=Você deve aceitar os Termos e Condições para se cadastrar.");
-            return;
-        }
+
+        // Configurar encoding para UTF-8
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
 
         // Obter os dados do formulário
         String nome = request.getParameter("nome");
         String telefone = request.getParameter("telefone");
         String email = request.getParameter("email");
         String senha = request.getParameter("senha");
+        String confirmarSenha = request.getParameter("confirmar_senha");
         String marcaCarro = request.getParameter("marca_carro");
         String modeloCarro = request.getParameter("modelo_carro");
         String matricula = request.getParameter("matricula");
         String disponibilidade = request.getParameter("disponibilidade");
 
+        // Verificar se as senhas coincidem
+        if (!senha.equals(confirmarSenha)) {
+            response.sendRedirect("index.jsp?error=As senhas não coincidem.");
+            return;
+        }
+
         // Criptografar a senha
         String senhaCriptografada = criptografarSenha(senha);
 
-        // Processar e obter os bytes das fotos do carro
+        // Diretório de upload
+        String uploadDir = getServletContext().getRealPath("/") + "uploads";
+        File uploadDirFile = new File(uploadDir);
+        if (!uploadDirFile.exists()) {
+            uploadDirFile.mkdirs();
+        }
+
+        // Processar e salvar as fotos do carro
         List<Part> fotos = request.getParts().stream()
                 .filter(part -> "fotos_carro".equals(part.getName()))
                 .collect(Collectors.toList());
 
-        byte[][] fotoBytes = new byte[4][];
+        String[] fotoPaths = new String[4];
         for (int i = 0; i < fotos.size() && i < 4; i++) {
-            try (InputStream inputStream = fotos.get(i).getInputStream()) {
-                fotoBytes[i] = inputStream.readAllBytes();
+            Part foto = fotos.get(i);
+            String fileName = Paths.get(foto.getSubmittedFileName()).getFileName().toString();
+            fileName = fileName.replaceAll("[^a-zA-Z0-9\\.\\-]", "_"); // Sanitizar o nome do arquivo
+            String filePath = uploadDir + File.separator + fileName;
+            File file = new File(filePath);
+            try (InputStream inputStream = foto.getInputStream()) {
+                Files.copy(inputStream, file.toPath());
             }
+            fotoPaths[i] = "uploads/" + fileName;
         }
 
         // Criar uma instância de Motoristas
@@ -76,30 +94,26 @@ public class CadastroDriver extends HttpServlet {
         motorista.setModeloCarro(modeloCarro);
         motorista.setMatricula(matricula);
         motorista.setDisponibilidade(disponibilidade);
-        motorista.setFoto1(fotoBytes.length > 0 ? fotoBytes[0] : null);
-        motorista.setFoto2(fotoBytes.length > 1 ? fotoBytes[1] : null);
-        motorista.setFoto3(fotoBytes.length > 2 ? fotoBytes[2] : null);
-        motorista.setFoto4(fotoBytes.length > 3 ? fotoBytes[3] : null);
+        motorista.setFoto1(fotoPaths.length > 0 ? fotoPaths[0] : null);
+        motorista.setFoto2(fotoPaths.length > 1 ? fotoPaths[1] : null);
+        motorista.setFoto3(fotoPaths.length > 2 ? fotoPaths[2] : null);
+        motorista.setFoto4(fotoPaths.length > 3 ? fotoPaths[3] : null);
+        motorista.setStatus("offline");
+        motorista.setBloqueado(false);
 
         // Persistir os dados no banco de dados
         MotoristasJpaController motoristasController = new MotoristasJpaController(emf);
         try {
             motoristasController.create(motorista);
-            logger.log(Level.INFO, "Motorista cadastrado com sucesso: {0}", motorista);
 
-            // Criar sessão para o motorista e iniciar sessão
-            HttpSession session = request.getSession(true); // Cria uma nova sessão se não existir
+            // Criar sessão para o usuário
+            HttpSession session = request.getSession();
             session.setAttribute("motorista", motorista);
-            session.setAttribute("status", "online");
-            logger.log(Level.INFO, "Sessão iniciada para o motorista: {0}", motorista.getNome());
 
             // Redirecionar para a página do motorista
             response.sendRedirect("motorista.jsp?success=Cadastro realizado com sucesso.");
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Erro ao cadastrar motorista", e);
             response.sendRedirect("cadastro_driver.jsp?error=Erro ao cadastrar: " + e.getMessage());
-        } finally {
-            emf.close();
         }
     }
 

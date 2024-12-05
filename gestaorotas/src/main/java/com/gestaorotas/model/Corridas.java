@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.gestaorotas.model;
 
 import jakarta.persistence.Basic;
@@ -24,10 +20,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-/**
- *
- * @author asus
- */
 @Entity
 @Table(name = "corridas")
 @XmlRootElement
@@ -38,68 +30,81 @@ import java.util.Date;
     @NamedQuery(name = "Corridas.findByPontoPartida", query = "SELECT c FROM Corridas c WHERE c.pontoPartida = :pontoPartida"),
     @NamedQuery(name = "Corridas.findByDestino", query = "SELECT c FROM Corridas c WHERE c.destino = :destino"),
     @NamedQuery(name = "Corridas.findByPreco", query = "SELECT c FROM Corridas c WHERE c.preco = :preco"),
-    @NamedQuery(name = "Corridas.findByStatus", query = "SELECT c FROM Corridas c WHERE c.status = :status")})
+    @NamedQuery(name = "Corridas.findByStatus", query = "SELECT c FROM Corridas c WHERE c.status = :status")
+})
 public class Corridas implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "data_hora")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataHora;
+
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "ponto_partida")
+    private String pontoPartida;
+
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "destino")
+    private String destino;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "preco")
+    private BigDecimal preco;
 
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "cliente_nome")
     private String clienteNome;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "pickup")
     private String pickup;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "destino")
-    private String destino;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "distancia")
     private double distancia;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "valor_estimado")
     private double valorEstimado;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "status")
     private String status;
+
     @Column(name = "data_hora_solicitacao")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataHoraSolicitacao;
+
     @JoinColumn(name = "motorista_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Motoristas motoristaId;
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "data_hora")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dataHora;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "ponto_partida")
-    private String pontoPartida;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "preco")
-    private BigDecimal preco;
     @JoinColumn(name = "id_motorista", referencedColumnName = "id")
     @ManyToOne
     private Motoristas idMotorista;
+
     @JoinColumn(name = "id_cliente", referencedColumnName = "id")
     @ManyToOne
     private Usuarios idCliente;
@@ -144,6 +149,13 @@ public class Corridas implements Serializable {
         this.pontoPartida = pontoPartida;
     }
 
+    public String getDestino() {
+        return destino;
+    }
+
+    public void setDestino(String destino) {
+        this.destino = destino;
+    }
 
     public BigDecimal getPreco() {
         return preco;
@@ -151,48 +163,6 @@ public class Corridas implements Serializable {
 
     public void setPreco(BigDecimal preco) {
         this.preco = preco;
-    }
-
-
-    public Motoristas getIdMotorista() {
-        return idMotorista;
-    }
-
-    public void setIdMotorista(Motoristas idMotorista) {
-        this.idMotorista = idMotorista;
-    }
-
-    public Usuarios getIdCliente() {
-        return idCliente;
-    }
-
-    public void setIdCliente(Usuarios idCliente) {
-        this.idCliente = idCliente;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Corridas)) {
-            return false;
-        }
-        Corridas other = (Corridas) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "com.gestaorotas.model.Corridas[ id=" + id + " ]";
     }
 
     public String getClienteNome() {
@@ -209,14 +179,6 @@ public class Corridas implements Serializable {
 
     public void setPickup(String pickup) {
         this.pickup = pickup;
-    }
-
-    public String getDestino() {
-        return destino;
-    }
-
-    public void setDestino(String destino) {
-        this.destino = destino;
     }
 
     public double getDistancia() {
@@ -258,5 +220,41 @@ public class Corridas implements Serializable {
     public void setMotoristaId(Motoristas motoristaId) {
         this.motoristaId = motoristaId;
     }
-    
+
+    public Motoristas getIdMotorista() {
+        return idMotorista;
+    }
+
+    public void setIdMotorista(Motoristas idMotorista) {
+        this.idMotorista = idMotorista;
+    }
+
+    public Usuarios getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(Usuarios idCliente) {
+        this.idCliente = idCliente;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Corridas)) {
+            return false;
+        }
+        Corridas other = (Corridas) object;
+        return (this.id != null || other.id == null) && (this.id == null || this.id.equals(other.id));
+    }
+
+    @Override
+    public String toString() {
+        return "com.gestaorotas.model.Corridas[ id=" + id + " ]";
+    }
 }
