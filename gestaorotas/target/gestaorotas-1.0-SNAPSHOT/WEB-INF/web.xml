@@ -92,6 +92,10 @@
         <servlet-name>EMFListener</servlet-name>
         <servlet-class>com.gestaorotas.servlet.EMFListener</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>HistoricoCorridasServlet</servlet-name>
+        <servlet-class>com.gestaorotas.servlet.HistoricoCorridasServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CadastroUser</servlet-name>
         <url-pattern>/CadastroUser</url-pattern>
@@ -183,6 +187,10 @@
     <servlet-mapping>
         <servlet-name>EMFListener</servlet-name>
         <url-pattern>/EMFListener</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HistoricoCorridasServlet</servlet-name>
+        <url-pattern>/HistoricoCorridasServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

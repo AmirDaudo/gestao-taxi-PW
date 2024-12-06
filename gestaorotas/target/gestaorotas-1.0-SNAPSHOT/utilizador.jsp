@@ -1,3 +1,5 @@
+<%@page import="java.util.List"%>
+<%@page import="com.gestaorotas.model.Corridas"%>
 <%@ page import="com.gestaorotas.model.Usuarios" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
@@ -149,31 +151,10 @@
                 <label for="fare" class="form-label">Valor Estimado (MZN)</label>
                 <input type="text" class="form-control" id="fare" name="fare" readonly>
             </div>
-            <button type="button" class="btn btn-primary w-100" onclick="generateRandomValues()">Gerar Valores</button>
+            <button type="button" class="btn btn-primary w-100" onclick="generateRandomValues()">mostrar preco</button>
             <button type="submit" class="btn btn-success w-100 mt-2">Solicitar Táxi</button>
         </form>
     </div>
-
-
-    <!-- Seção de Histórico de Corridas -->
-    <div class="container mt-5" id="historico-corridas">
-        <div class="section-header">
-            <h3>Histórico de Corridas</h3>
-            <ul id="corridas-list" class="list-group">
-                <!-- Corridas anteriores serão listadas aqui -->
-            </ul>
-        </div>
-    </div>
-</div> 
-    <!-- Outras Funcionalidades: Cancelar Corrida, Denunciar, etc. -->
-    <div class="container mt-5">
-        <!-- Seção de Cancelar Corrida -->
-        <div class="section-header" id="cancelar-corrida">
-            <h3>Cancelar Corrida</h3>
-            <p> Deseja cancelar a corrida? Se sim, clique no botão abaixo:</p>
-            <button class="btn btn-custom-cancel w-100" id="submit-cancel">Cancelar Corrida</button>
-        </div>
-
 
    <!-- Seção de Denúncia -->
     <section class="py-5 bg-light">
@@ -207,19 +188,6 @@
             </div>
         </div>
     </div>
-
-
-       <!-- Chat com o Cliente -->
-            <div id="chat" class="tab-content mt-5">
-                <h3 class="mb-4">Chat</h3>
-                <div class="chat-box" id="chatBox" style="height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
-        <!-- Mensagens dinâmicas serão exibidas aqui -->
-             </div>
-                <div class="input-group mt-3">
-                <input type="text" class="form-control" id="chatInput" placeholder="Escreva uma mensagem">
-                    <button class="btn btn-warning" id="sendButton">Enviar</button>
-                      </div>
-                        </div>
       
       <!-- Modal de Exclusão de Conta -->
 <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">

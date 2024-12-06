@@ -229,10 +229,7 @@
                         <label for="confirmPasswordRegister" class="form-label">Confirme sua Senha</label>
                         <input type="password" class="form-control" id="confirmPasswordRegister" placeholder="Confirme sua senha" required>
                     </div>
-                    <!-- Exibição de mensagem de erro -->
-                    <c:if test="${not empty errorMessage}">
-                        <div class="alert alert-danger" role="alert">${errorMessage}</div>
-                    </c:if>
+                    
                      <!-- Seção para cadastro com redes sociais -->
                 <div class="text-center mt-4">
                     <p>Ou cadastre-se com:</p>

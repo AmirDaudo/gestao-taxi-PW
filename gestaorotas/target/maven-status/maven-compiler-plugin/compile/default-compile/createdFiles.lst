@@ -7,6 +7,7 @@ com\gestaorotas\servlet\TaxiRequestServlet.class
 com\gestaorotas\model\Corridas.class
 com\gestaorotas\controladora\exceptions\IllegalOrphanException.class
 com\gestaorotas\servlet\ContatoServlet.class
+com\gestaorotas\servlet\EMFListener.class
 com\gestaorotas\servlet\PedidoTaxiServlet.class
 com\gestaorotas\model\exceptions\NonexistentEntityException.class
 com\gestaorotas\servlet\DenunciaServlet.class

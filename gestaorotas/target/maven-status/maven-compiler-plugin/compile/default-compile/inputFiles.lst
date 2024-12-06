@@ -12,6 +12,7 @@ C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\J
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\controladora\exceptions\NonexistentEntityException.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\model\exceptions\NonexistentEntityException.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\servlet\MotoristasServlet.java
+C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\servlet\HistoricoCorridasServlet.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\controladora\exceptions\IllegalOrphanException.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\servlet\UpdateDriverProfileServlet.java
 C:\Users\asus\Desktop\gestao-taxi-PW\gestaorotas\src\main\java\com\gestaorotas\UsuariosJpaController2.java
