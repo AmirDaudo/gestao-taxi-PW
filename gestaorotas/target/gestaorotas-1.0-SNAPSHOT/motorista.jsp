@@ -1,4 +1,6 @@
-  <%-- 
+  <%@page import="jakarta.persistence.EntityManager"%>
+<%@page import="jakarta.persistence.EntityManagerFactory"%>
+<%-- 
     Document   : motorista
     Created on : 09/11/2024, 10:18:30
     Author     : asus
@@ -94,9 +96,6 @@
                     <a href="#pagamentos" class="list-group-item list-group-item-action">
                         <i class="fas fa-wallet"></i> Pagamentos
                     </a>
-                    <a href="#chat" class="list-group-item list-group-item-action">
-                        <i class="fas fa-comments"></i> Chat com Cliente
-                    </a>
                     <a href="#configuracoes" class="list-group-item list-group-item-action">
                         <i class="fas fa-cog"></i> Configurações
                     </a>
@@ -128,67 +127,58 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card border-0 shadow">
-                                <div class="card-body">
-                                    <i class="fas fa-star fa-3x text-warning mb-3"></i>
-                                    <h5 class="card-title">Avaliações</h5>
-                                    <p class="card-text" id="avaliacoesMotorista">4.8</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-  <div class="container mt-3">
-        <h1 class="text-center">Pedidos de Corrida</h1>
-        
+       
+<div class="container my-5">
+        <h1>Solicitações de Corridas</h1>
         <%
-            List<Corridas> corridasPendentes = (List<Corridas>) request.getAttribute("corridasPendentes");
-            if (corridasPendentes != null && !corridasPendentes.isEmpty()) {
+            EntityManagerFactory emf = (EntityManagerFactory) getServletContext().getAttribute("emf");
+            EntityManager em = emf.createEntityManager();
+           // Motoristas motorista = (Motoristas) session.getAttribute("motorista");
+
+            if (motorista != null) {
+                // Busca todas as corridas solicitadas que estão aguardando por um motorista
+                List<Corridas> corridasSolicitadas = em.createQuery("SELECT c FROM Corridas c WHERE c.status = 'solicitada'", Corridas.class).getResultList();
         %>
-            <div class="list-group mt-5">
-                <%
-                    for (Corridas corrida : corridasPendentes) {
-                %>
-                <div class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5>Cliente: <%= corrida.getClienteNome() %></h5>
-                        <p>Destino: <%= corrida.getDestino() %></p>
-                        <p>Distância: <%= corrida.getDistancia() %> km | Valor Estimado: MZN <%= corrida.getValorEstimado() %></p>
-                    </div>
-                    <div>
-                        <form id="form-<%= corrida.getId() %>" method="post">
-                            <input type="hidden" name="corridaId" value="<%= corrida.getId() %>">
-                            <button type="button" class="btn btn-success me-2" onclick="aceitarPedido(<%= corrida.getId() %>)">Aceitar</button>
-                            <button type="button" class="btn btn-danger" onclick="rejeitarPedido(<%= corrida.getId() %>)">Rejeitar</button>
-                        </form>
-                    </div>
-                </div>
-                <%
-                    }
-                %>
-            </div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Partida</th>
+                            <th>Destino</th>
+                            <th>Distância</th>
+                            <th>Valor Estimado</th>
+                            <th>Solicitada em</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (Corridas corrida : corridasSolicitadas) { %>
+                            <tr>
+                                <td><%= corrida.getId() %></td>
+                                <td><%= corrida.getClienteNome() %></td>
+                                <td><%= corrida.getPickup() %></td>
+                                <td><%= corrida.getDestino() %></td>
+                                <td><%= corrida.getDistancia() %> km</td>
+                                <td>MT <%= corrida.getPreco() %></td>
+                                <td><%= corrida.getDataHoraSolicitacao() %></td>
+                                <td>
+                                    <form action="AceitarCorridaServlet" method="post" class="d-inline">
+                                        <input type="hidden" name="corridaId" value="<%= corrida.getId() %>">
+                                        <button type="submit" class="btn btn-primary">Aceitar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
         <%
             } else {
-        %>
-            <div class="alert alert-info">Nenhuma requisição de táxi pendente.</div>
-        <%
+                response.sendRedirect("index.jsp?error=Por favor, faça o login como motorista.");
             }
+            em.close();
         %>
     </div>
-
-              <!-- Chat com o Cliente -->
-            <div id="chat" class="tab-content mt-5">
-                <h3 class="mb-4">Chat</h3>
-                <div class="chat-box" id="chatBox" style="height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
-        <!-- Mensagens dinâmicas serão exibidas aqui -->
-             </div>
-                <div class="input-group mt-3">
-                <input type="text" class="form-control" id="chatInput" placeholder="Escreva uma mensagem">
-                    <button class="btn btn-warning" id="sendButton">Enviar</button>
-                      </div>
-                        </div>
-
                 <!-- Pagamentos -->
                 <div id="pagamentos" class="tab-content mt-5">
                     <h3 class="mb-4">Informações de Pagamento</h3>

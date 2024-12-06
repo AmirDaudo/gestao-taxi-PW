@@ -88,6 +88,10 @@
         <servlet-name>CadastroDriver</servlet-name>
         <servlet-class>com.gestaorotas.servlet.CadastroDriver</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>EMFListener</servlet-name>
+        <servlet-class>com.gestaorotas.servlet.EMFListener</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CadastroUser</servlet-name>
         <url-pattern>/CadastroUser</url-pattern>
@@ -175,6 +179,10 @@
     <servlet-mapping>
         <servlet-name>CadastroDriver</servlet-name>
         <url-pattern>/CadastroDriver</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EMFListener</servlet-name>
+        <url-pattern>/EMFListener</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

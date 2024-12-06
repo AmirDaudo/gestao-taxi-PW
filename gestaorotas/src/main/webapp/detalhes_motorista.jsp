@@ -55,9 +55,7 @@
                     <p><strong>Telefone:</strong> <%= motorista.getTelefone() %></p>
                     <p><strong>Status:</strong> <%= motorista.getStatus() %><p>
                     <p><strong>Disponibilidade:</strong> 
-                        <span class="badge <%= "bloqueado".equals(motorista.getDisponibilidade()) ? "bg-danger" : "bg-success" %>">
-                            <%= motorista.getDisponibilidade() %>
-                        </span>
+                 
                     </p>
 
                     <h2 class="mt-4">Fotos do Carro</h2>
@@ -85,16 +83,18 @@
                     </div>
 
                     <h2 class="mt-4">Ações</h2>
-                    <form action="ApagarMotoristaServlet" method="post" class="d-inline">
-                        <input type="hidden" name="id" value="<%= motorista.getId() %>">
-                        <button type="submit" class="btn btn-danger">Apagar Motorista</button>
-                    </form>
-                    <form action="BloquearMotoristaServlet" method="post" class="d-inline">
-                        <input type="hidden" name="id" value="<%= motorista.getId() %>">
-                        <button type="submit" class="btn btn-warning">
-                            <%= "bloqueado".equals(motorista.getDisponibilidade()) ? "Desbloquear Motorista" : "Bloquear Motorista" %>
-                        </button>
-                    </form>
+                   <% if (Boolean.TRUE.equals(motorista.getBloqueado())) { %>
+                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmUnblockModal" data-id="<%= motorista.getId() %>">
+                                    Desbloquear
+                                </button>
+                            <% } else { %>
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#confirmBlockModal" data-id="<%= motorista.getId() %>">
+                                    Bloquear
+                                </button>
+                            <% } %>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="<%= motorista.getId() %>">
+                                Apagar
+                            </button>
                 </div>
             </div>
 
@@ -149,5 +149,32 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script> 
+        // Script para definir o ID do motorista nos modais de confirmação
+        var confirmBlockModal = document.getElementById('confirmBlockModal');
+        confirmBlockModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var motoristaId = button.getAttribute('data-id');
+            var inputMotoristaIdBloquear = document.getElementById('motoristaIdBloquear');
+            inputMotoristaIdBloquear.value = motoristaId;
+        });
+
+        var confirmUnblockModal = document.getElementById('confirmUnblockModal');
+        confirmUnblockModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var motoristaId = button.getAttribute('data-id');
+            var inputMotoristaIdDesbloquear = document.getElementById('motoristaIdDesbloquear');
+            inputMotoristaIdDesbloquear.value = motoristaId;
+        });
+
+        var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var motoristaId = button.getAttribute('data-id');
+            var inputMotoristaIdApagar = document.getElementById('motoristaIdApagar');
+            inputMotoristaIdApagar.value = motoristaId;
+        });
+    </script>
 </body>
 </html>

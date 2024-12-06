@@ -170,7 +170,7 @@
         <!-- Seção de Cancelar Corrida -->
         <div class="section-header" id="cancelar-corrida">
             <h3>Cancelar Corrida</h3>
-            <p>Deseja cancelar a corrida? Se sim, clique no botão abaixo:</p>
+            <p> Deseja cancelar a corrida? Se sim, clique no botão abaixo:</p>
             <button class="btn btn-custom-cancel w-100" id="submit-cancel">Cancelar Corrida</button>
         </div>
 

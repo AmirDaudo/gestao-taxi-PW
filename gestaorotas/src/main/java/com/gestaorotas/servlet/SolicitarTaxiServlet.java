@@ -31,13 +31,17 @@ public class SolicitarTaxiServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession(false); // Obter sessão existente, não criar nova
         if (session == null) {
-            response.sendRedirect("index.jsp"); // Redirecionar para a página de login se a sessão não existir
+            request.setAttribute("message", "Por favor, faça login.");
+            request.setAttribute("status", "error");
+            request.getRequestDispatcher("index.jsp").forward(request, response);
             return;
         }
         
         Usuarios cliente = (Usuarios) session.getAttribute("usuario"); // Obter o objeto Usuário logado da sessão
         if (cliente == null) {
-            response.sendRedirect("index.jsp"); // Redirecionar para a página de login se o usuário não estiver autenticado
+            request.setAttribute("message", "Por favor, faça login.");
+            request.setAttribute("status", "error");
+            request.getRequestDispatcher("index.jsp").forward(request, response);
             return;
         }
 
@@ -98,9 +102,6 @@ public class SolicitarTaxiServlet extends HttpServlet {
             em.getTransaction().begin();
             em.persist(corrida);
             em.getTransaction().commit();
-
-            // Enviar notificação para motoristas online (exemplo de lógica)
-            System.out.println("Notificando motorista: " + motoristasOnline.get(0).getNome());
 
             request.setAttribute("message", "Solicitação enviada para motoristas online.");
             request.setAttribute("status", "success");
